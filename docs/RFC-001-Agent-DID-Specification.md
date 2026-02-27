@@ -207,6 +207,46 @@ Referencia actual de fixtures:
 - `sdk/tests/fixtures/interop-vectors.json`
 - `sdk/tests/InteropVectors.test.ts`
 
+### 7.3 Mapeo rápido: RFC → SDK
+
+| Flujo RFC | API/artefacto SDK de referencia |
+| :-- | :-- |
+| Registro de identidad (6.1) | `AgentIdentity.create(params)` |
+| Firma de payload (6.2) | `signMessage(payload, privateKey)` |
+| Firma HTTP (6.5) | `signHttpRequest(params)` |
+| Resolución DID (6.2) | `AgentIdentity.resolve(did)` |
+| Verificación de firma (6.2) | `AgentIdentity.verifySignature(...)` y `verifyHttpRequestSignature(...)` |
+| Evolución de documento (6.3) | `updateDidDocument(did, patch)` |
+| Rotación de claves (8.2) | `rotateVerificationMethod(did)` |
+| Revocación (6.4) | `revokeDid(did)` |
+| Resolver producción (5.3) | `useProductionResolverFromHttp(...)`, `useProductionResolverFromJsonRpc(...)` |
+| Integración EVM (5.2) | `EthersAgentRegistryContractClient` + `EvmAgentRegistry` |
+
+### 7.4 Flujo mínimo end-to-end (onboarding)
+
+1. Crear identidad del agente con `create(params)`.
+2. Firmar un payload con `signMessage`.
+3. Verificar ese payload con `verifySignature` usando el DID emitido.
+4. Resolver el DID con `resolve` y validar estado vigente.
+5. Revocar con `revokeDid` y confirmar que una verificación posterior falla.
+
+Ejemplos ejecutables:
+
+- `sdk/examples/e2e-smoke.js`
+- `sdk/examples/evm-registry-wiring.ts`
+
+Comando recomendado de validación completa:
+
+- `npm run conformance:rfc001`
+
+### 7.5 Errores esperados y comportamiento
+
+- **DID no encontrado:** la resolución falla (`DID not found` o equivalente del resolver).
+- **DID revocado:** `resolve`/`verifySignature` deben fallar o retornar inválido.
+- **Firma inválida/tampered payload:** verificación retorna `false`.
+- **`Signature-Input` incompatible:** verificación HTTP retorna `false`.
+- **`documentRef` no resoluble:** resolver intenta failover; si todos fallan, error.
+
 ---
 
 ## 8. Seguridad y privacidad
@@ -251,6 +291,16 @@ Un implementador se considera **conforme RFC-001** si cumple:
 La evaluación operativa de cumplimiento se mantiene en:
 
 - `docs/RFC-001-Compliance-Checklist.md`
+
+---
+
+## 12. Glosario operativo
+
+- **Controller:** identidad humana/organizacional que gobierna el agente en el documento DID.
+- **Owner (on-chain):** cuenta EVM con control operativo del registro del DID en contrato.
+- **Delegate:** cuenta autorizada por `owner` para acciones de revocación.
+- **DocumentRef:** referencia on-chain al documento off-chain del agente.
+- **Universal Resolver:** componente que combina lookup de registry + obtención de documento + caché/failover.
 
 ---
 
