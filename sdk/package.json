@@ -1,22 +1,49 @@
 {
   "name": "@agent-did/sdk",
   "version": "0.1.0",
-  "description": "TypeScript SDK for creating, signing, and verifying Agent-DIDs",
+  "description": "TypeScript SDK for creating, signing, and verifying Agent-DIDs based on RFC-001. Decentralized identity for autonomous AI agents with Ed25519 signatures, HTTP Bot Auth, and EVM registry support.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "did",
     "agent",
     "ai",
     "web3",
-    "identity"
+    "identity",
+    "decentralized-identity",
+    "verifiable-credentials",
+    "ed25519",
+    "agent-did",
+    "rfc-001",
+    "autonomous-agents",
+    "bot-auth",
+    "http-signatures",
+    "zero-trust"
   ],
-  "author": "",
+  "author": "Edison Munoz <edison.munoz@agent-did.org>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/edisonduran/Agent-citizen-identification.git",
+    "directory": "sdk"
+  },
+  "homepage": "https://github.com/edisonduran/Agent-citizen-identification#readme",
+  "bugs": {
+    "url": "https://github.com/edisonduran/Agent-citizen-identification/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@noble/curves": "^1.4.0",
     "@noble/hashes": "^1.4.0",

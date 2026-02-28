@@ -1,0 +1,14 @@
+# Source and config (dist/ is what gets published)
+src/
+tests/
+examples/
+tsconfig.json
+jest.config.js
+babel.config.json
+.npmignore
+.gitignore
+
+# Development artifacts
+node_modules/
+coverage/
+*.tgz
