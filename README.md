@@ -72,16 +72,50 @@ This command runs SDK build/tests and operational smokes (policy, HA, RPC, E2E).
 
 - Main specification: [docs/RFC-001-Agent-DID-Specification.md](docs/RFC-001-Agent-DID-Specification.md)
 - Compliance checklist: [docs/RFC-001-Compliance-Checklist.md](docs/RFC-001-Compliance-Checklist.md)
+- Implementation backlog: [docs/RFC-001-Implementation-Backlog.md](docs/RFC-001-Implementation-Backlog.md)
 - Resolver HA runbook: [docs/RFC-001-Resolver-HA-Runbook.md](docs/RFC-001-Resolver-HA-Runbook.md)
+- 2-hour practical course: [docs/RFC-001-2h-Practical-Course.md](docs/RFC-001-2h-Practical-Course.md)
+- Training manual: [docs/RFC-001-Training-Manual.md](docs/RFC-001-Training-Manual.md)
 - Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Roadmap
 
-RFC-001 is implemented and conformant. Next iterations may focus on:
+RFC-001 is implemented and fully conformant. The project follows a 3-phase roadmap:
 
-- New RFCs (advanced delegation, A2H approvals)
-- External integrations and shared fixture adoption across implementations
-- Operational/CI hardening for multi-region production environments
+### Phase 1 — Consolidation & Visibility (current)
+
+| # | Item | Status |
+|---|---|---|
+| F1-01 | Publish SDK to npm (`@agent-did/sdk`) | ✅ Done |
+| F1-02 | Translate all docs to English | ✅ Done |
+| F1-03 | LangChain plugin for Agent-DID identity | Open |
+| F1-04 | Submit RFC-001 to DIF | Open |
+| F1-05 | Automated smart contract audit (Slither/Mythril) | Open |
+| F1-06 | CI/CD pipeline with GitHub Actions | Open |
+
+### Phase 2 — Ecosystem Expansion (3-6 months)
+
+| # | Item | Status |
+|---|---|---|
+| F2-01 | Python SDK with feature parity | Open |
+| F2-02 | Google A2A proof-of-concept | Open |
+| F2-03 | Production resolver (IPFS/Arweave + HTTP) | Open |
+| F2-04 | CrewAI and AutoGen plugins | Open |
+| F2-05 | Public testnet deployment | Open |
+| F2-06 | Formal whitepaper publication | Open |
+
+### Phase 3 — Maturity & Standardization (6-12 months)
+
+| # | Item | Status |
+|---|---|---|
+| F3-01 | Propose `did:agent` to W3C DID WG | Planned |
+| F3-02 | Conformance certification service | Planned |
+| F3-03 | ZKP for capability verification | Planned |
+| F3-04 | Formal contract audit for mainnet | Planned |
+| F3-05 | Enterprise partnerships | Planned |
+| F3-06 | Account Abstraction (ERC-4337) for agent wallets | Planned |
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to pick up roadmap items.
 
 ## License
 
