@@ -1,5 +1,7 @@
 {
   "scripts": {
+    "audit:contracts": "node scripts/contract-audit.js",
+    "test:langchain": "npm --prefix integrations/langchain test",
     "smoke:e2e": "node scripts/e2e-smoke.js",
     "smoke:ha": "node scripts/resolver-ha-smoke.js",
     "smoke:policy": "node scripts/revocation-policy-smoke.js",

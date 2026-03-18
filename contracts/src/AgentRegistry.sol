@@ -17,8 +17,8 @@ contract AgentRegistry {
     event AgentRegistered(string did, string controller, string createdAt);
     event AgentRevoked(string did, string revokedAt);
     mapping(string => mapping(address => bool)) private revocationDelegates;
-    event RevocationDelegateUpdated(string did, address delegate, bool authorized);
-    event AgentOwnershipTransferred(string did, address previousOwner, address newOwner);
+    event RevocationDelegateUpdated(string did, address indexed delegate, bool authorized);
+    event AgentOwnershipTransferred(string did, address indexed previousOwner, address indexed newOwner);
 
     function registerAgent(string calldata did, string calldata controller) external {
         require(bytes(did).length > 0, "did required");

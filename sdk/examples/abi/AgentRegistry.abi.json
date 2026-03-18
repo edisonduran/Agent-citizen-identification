@@ -9,13 +9,13 @@
         "type": "string"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "newOwner",
         "type": "address"
@@ -78,7 +78,7 @@
         "type": "string"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "delegate",
         "type": "address"

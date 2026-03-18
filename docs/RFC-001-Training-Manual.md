@@ -467,6 +467,10 @@ Agents representing different supply chain participants use Agent-DIDs to establ
 
 Financial or healthcare agents demonstrate their identity and capabilities through their DID Document, enabling automated compliance checks.
 
+### 12.6 LangChain Agent Orchestration
+
+LangChain agents can inject Agent-DID identity into their runtime through the integration package in [../integrations/langchain/README.md](../integrations/langchain/README.md), allowing tool-enabled agents to expose their DID, sign payloads or HTTP requests, and verify signatures without leaking private keys to the model.
+
 ---
 
 ## 13. Troubleshooting & FAQ
@@ -487,6 +491,9 @@ A: No. DID ownership is tied to the original registrant address. Create a new DI
 
 **Q: Is Agent-DID compatible with other DID methods?**
 A: Agent-DID follows W3C DID Core 1.0 so it interoperates at the standard level. Cross-method resolution depends on universal resolver support.
+
+**Q: Is there a framework integration example available today?**
+A: Yes. LangChain JS 1.x is already implemented in [../integrations/langchain/README.md](../integrations/langchain/README.md). Microsoft Agent Framework and CrewAI remain roadmap integrations.
 
 ### Common Issues
 
@@ -526,7 +533,7 @@ A: Agent-DID follows W3C DID Core 1.0 so it interoperates at the standard level.
 |---|---|---|
 | **1. Foundations** | Read this manual (Sections 1-4), review RFC-001 | 2 hours |
 | **2. Hands-on** | Complete 2-Hour Course (all modules + exercises) | 2 hours |
-| **3. Deep Dive** | Read SDK source code, study contract, run all tests | 3 hours |
+| **3. Deep Dive** | Read SDK source code, review [../integrations/langchain/README.md](../integrations/langchain/README.md), study contract, run all tests | 3 hours |
 | **4. Validation** | Run conformance suite, review Compliance Checklist | 1 hour |
 | **5. Production** | Review HA Runbook, plan deployment | 2 hours |
 
@@ -539,3 +546,4 @@ A: Agent-DID follows W3C DID Core 1.0 so it interoperates at the standard level.
 - [Multibase Specification](https://datatracker.ietf.org/doc/html/draft-multiformats-multibase)
 - [Solidity Documentation](https://docs.soliditylang.org/)
 - [@noble/curves](https://github.com/paulmillr/noble-curves)
+- [Agent-DID LangChain integration](../integrations/langchain/README.md)

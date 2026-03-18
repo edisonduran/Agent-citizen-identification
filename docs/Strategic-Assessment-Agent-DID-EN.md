@@ -94,7 +94,7 @@ The project occupies a strategic space of very high value with virtually no dire
 | BT-01 | In-memory resolver by default (not persistent) | Not suitable for real production | High | Implement persistent backend (Redis/IPFS/Arweave) |
 | BT-02 | No contract security audit | Risk for mainnet deployment | High | Audit with Slither/Mythril at minimum; formal audit for mainnet |
 | BT-03 | No ZKP implemented | Theoretical paper mentions them but SDK doesn't support them | Medium | Integrate ZKP library (snarkjs or similar) for capability verification |
-| BT-04 | No integration with agent frameworks | Limits immediate adoption | High | Plugins for LangChain, CrewAI, Microsoft Agent Framework |
+| BT-04 | No integration with agent frameworks | Limits immediate adoption | High | Integrations for LangChain, CrewAI, Microsoft Agent Framework |
 | BT-05 | No Python support | Excludes the dominant AI/ML ecosystem | Medium-High | Python SDK as P2 priority |
 | BT-06 | No observable CI/CD | Tests run locally; no automated pipeline | Medium | GitHub Actions with automated conformance |
 | BT-07 | Self-directed RFC, not ratified | No standards body endorsement | Medium | Submit to DIF or W3C for review |
@@ -166,7 +166,7 @@ The project occupies a strategic space of very high value with virtually no dire
 | ID | Barrier | Severity | Mitigation strategy |
 |---|---|---|---|
 | BA-01 | Network effect — DIDs need critical mass of verifiers/issuers | High | Alliances with agent platforms (LangChain, CrewAI, Microsoft Agent Framework) |
-| BA-02 | No integration with dominant AI frameworks | High | Develop plugins/middleware as P1 priority (LangChain) and F2 (Microsoft Agent Framework, CrewAI) |
+| BA-02 | No integration with dominant AI frameworks | High | Develop integrations/middleware as P1 priority (LangChain) and F2 (Microsoft Agent Framework, CrewAI) |
 | BA-03 | Standard not ratified by W3C/DIF/IETF | Medium | Submit RFC to DIF; participate in working groups |
 | BA-04 | Python-first AI ecosystem | Medium-High | Python SDK with feature parity |
 | BA-05 | Market education | Medium | The 2h course and theoretical paper are good initial assets |
@@ -198,10 +198,12 @@ The project occupies a strategic space of very high value with virtually no dire
 |---|---|---|---|
 | F1-01 | Publish SDK on npm as `@agent-did/sdk` open-source | Technical | Visibility + organic adoption |
 | F1-02 | Translate README and key docs to English | Documentation | Global reach |
-| F1-03 | Create LangChain plugin that injects Agent-DID identity | Integration | Access to the largest agent ecosystem |
+| F1-03 | Deliver LangChain integration that injects Agent-DID identity | Integration | Access to the largest agent ecosystem |
 | F1-04 | Submit RFC-001 to DIF (Decentralized Identity Foundation) | Standards | Institutional credibility |
 | F1-05 | Automated smart contract audit (Slither/Mythril) | Security | Prerequisite for mainnet |
 | F1-06 | CI/CD pipeline with GitHub Actions | DevOps | Automated conformance per PR |
+
+Current status: F1-03 is already completed and the implementation is available in [../integrations/langchain/README.md](../integrations/langchain/README.md).
 
 ### Phase 2 — Ecosystem expansion (3-6 months)
 
@@ -210,8 +212,8 @@ The project occupies a strategic space of very high value with virtually no dire
 | F2-01 | Python SDK with feature parity | Technical | Penetrate dominant AI/ML ecosystem |
 | F2-02 | Proof-of-concept integration with Google A2A | Integration | Demonstrate identity in A2A communication |
 | F2-03 | Production resolver with real backend (IPFS/Arweave + HTTP) | Technical | Production-readiness |
-| F2-04 | Microsoft Agent Framework plugin (Semantic Kernel) | Integration | Access to Microsoft's enterprise ecosystem — covers AutoGen (absorbed by Microsoft) |
-| F2-05 | CrewAI plugin | Integration | Coverage of the most popular independent agent framework |
+| F2-04 | Microsoft Agent Framework integration (Semantic Kernel) | Integration | Access to Microsoft's enterprise ecosystem — covers AutoGen (absorbed by Microsoft) |
+| F2-05 | CrewAI integration | Integration | Coverage of the most popular independent agent framework |
 | F2-06 | Deployment on public testnet with documentation | Infrastructure | Validation in real environment |
 | F2-07 | Publication of theoretical paper as formal whitepaper | Marketing | Technical credibility |
 | F2-08 | Explore integration with Azure AI Agent Service | Integration | Identity layer for Azure-hosted agents |

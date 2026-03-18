@@ -1,0 +1,28 @@
+{
+  "name": "@agent-did/microsoft-agent-framework",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Design scaffold for the future Agent-DID integration with Microsoft Agent Framework.",
+  "main": "src/index.js",
+  "files": [
+    "src/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node -e \"console.log('Design scaffold only: no build step yet')\"",
+    "test": "node -e \"console.log('Design scaffold only: no tests yet')\""
+  },
+  "keywords": [
+    "agent-did",
+    "microsoft-agent-framework",
+    "semantic-kernel",
+    "identity",
+    "did",
+    "design-scaffold"
+  ],
+  "author": "Edison Munoz <edison.munoz@agent-did.org>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

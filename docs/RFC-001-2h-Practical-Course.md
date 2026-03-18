@@ -112,6 +112,10 @@ await agent.rotateVerificationMethod();
 
 **Expected time:** 10 min.
 
+### 3.6 Framework Integration Snapshot
+
+If you want to see this identity model inside an agent runtime instead of plain SDK calls, review the LangChain JS integration in [../integrations/langchain/README.md](../integrations/langchain/README.md). It shows how to inject Agent-DID context through middleware and expose signing or verification operations as tools.
+
 ---
 
 ## Module 4 — Universal Resolver & HA (20 min)
@@ -238,4 +242,4 @@ node scripts/revocation-policy-smoke.js
 | 2 | Complete Modules 1-3 (exercises) | 60 min |
 | 3 | Complete Modules 4-6 (exercises) | 55 min |
 | 4 | Run full conformance + smoke tests | 30 min |
-| 5 | Review assessment, revisit weak areas | 30 min |
+| 5 | Review assessment, revisit weak areas, inspect LangChain integration example | 30 min |

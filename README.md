@@ -45,6 +45,14 @@ Includes:
 - JSON-RPC resolution smoke: `npm run smoke:rpc`
 - Revocation policy smoke: `npm run smoke:policy`
 
+## Integrations
+
+- LangChain JS 1.x: implemented in [integrations/langchain/README.md](integrations/langchain/README.md)
+- LangChain Python: design scaffold available in [integrations/langchain-python/README.md](integrations/langchain-python/README.md), dependent on the future Python SDK (F2-01)
+- Microsoft Agent Framework (Semantic Kernel): design scaffold available in [integrations/microsoft-agent-framework/README.md](integrations/microsoft-agent-framework/README.md), roadmap item F2-04
+- CrewAI: design scaffold available in [integrations/crewai/README.md](integrations/crewai/README.md), roadmap item F2-05
+- Azure AI Agent Service: planned roadmap item F2-08
+
 ## Running Locally
 
 ### Requirements
@@ -67,6 +75,22 @@ npm run conformance:rfc001
 ```
 
 This command runs SDK build/tests and operational smokes (policy, HA, RPC, E2E).
+
+If you are working on the LangChain package, also run:
+
+```bash
+npm run test:langchain
+```
+
+If you are working on the smart contract security track, run:
+
+```bash
+npm run audit:contracts
+```
+
+This command generates Slither and Mythril reports under `contracts/reports/security` and requires a running Docker daemon.
+
+By default the audit gate is strict: any unmatched finding at severity `Low` or higher fails the command. You can raise the threshold with `AUDIT_FAIL_ON_SEVERITY=medium|high|critical` for exploratory runs.
 
 ## Key Documentation
 
@@ -92,12 +116,22 @@ RFC-001 is implemented and fully conformant. The project follows a 3-phase roadm
 |---|---|---|
 | F1-01 | Publish SDK to npm (`@agent-did/sdk`) | Done |
 | F1-02 | Translate all docs to English | Done (course + strategic assessment + README) |
-| F1-03 | LangChain plugin for Agent-DID identity | Open |
+| F1-03 | LangChain integration for Agent-DID identity | Done |
 | F1-04 | Submit RFC-001 to DIF | Open |
-| F1-05 | Automated smart contract audit (Slither/Mythril) | Open |
+| F1-05 | Automated smart contract audit (Slither/Mythril) | Done |
 | F1-06 | CI/CD pipeline with GitHub Actions | Done |
 
 The repository now includes a GitHub Actions workflow at `.github/workflows/ci.yml` that installs the root, SDK, and contract workspaces and runs `npm run conformance:rfc001` on pushes, pull requests, and manual dispatches.
+
+That workflow also installs and tests the LangChain integration package in `integrations/langchain`.
+
+Smart contract audit automation is available through `npm run audit:contracts` and the dedicated GitHub Actions workflow at `.github/workflows/contract-audit.yml`, which runs Slither and Mythril and uploads the resulting reports as CI artifacts.
+
+The audit runner preserves the raw JSON reports, classifies only exact known-noise matches in the generated summary, and applies a severity-aware gate to unmatched findings.
+
+Initial triage of the current contract findings is documented in [docs/F1-05-Contract-Audit-Triage.md](docs/F1-05-Contract-Audit-Triage.md). Formal external audit remains a later milestone under F3-04.
+
+The LangChain integration is available in [integrations/langchain/README.md](integrations/langchain/README.md).
 
 ### Phase 2 — Ecosystem Expansion (3-6 months)
 
@@ -106,8 +140,8 @@ The repository now includes a GitHub Actions workflow at `.github/workflows/ci.y
 | F2-01 | Python SDK with feature parity | Open |
 | F2-02 | Google A2A proof-of-concept | Open |
 | F2-03 | Production resolver (IPFS/Arweave + HTTP) | Open |
-| F2-04 | Microsoft Agent Framework (Semantic Kernel) plugin | Open |
-| F2-05 | CrewAI plugin | Open |
+| F2-04 | Microsoft Agent Framework (Semantic Kernel) integration | Open |
+| F2-05 | CrewAI integration | Open |
 | F2-06 | Public testnet deployment | Open |
 | F2-07 | Formal whitepaper publication | Open |
 | F2-08 | Azure AI Agent Service integration | Open |

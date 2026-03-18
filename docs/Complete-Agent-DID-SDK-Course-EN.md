@@ -4578,7 +4578,7 @@ await contract.waitForDeployment();
 | 1 | "How does it differ from did:ethr or did:web?" | Agent-DID adds AI agent metadata (model hash, system prompt hash, capabilities), IP protection, and fleet governance. did:ethr is just generic identity. |
 | 2 | "Why don't you use ZKPs?" | It's on the roadmap Phase 3 (F3-03) for capability verification without revealing content. Currently we use hashes for IP protection. |
 | 3 | "How does it scale?" | Minimum on-chain (only registration and revocation), horizontally scalable off-chain documents. A registration is ~200 bytes on-chain, the complete document can be on IPFS. |
-| 4 | "Does it work with LangChain/CrewAI?" | Plugin on roadmap (F1-03). Integration with Microsoft Agent Framework (Semantic Kernel) in F2-04 and CrewAI in F2-05. AutoGen was absorbed by Microsoft Agent Framework. The SDK is framework-agnostic — any agent that can run TypeScript/JavaScript can use it. |
+| 4 | "Does it work with LangChain/CrewAI?" | Yes. The LangChain integration is already implemented in [../integrations/langchain/README.md](../integrations/langchain/README.md). Microsoft Agent Framework (Semantic Kernel) remains in F2-04 and CrewAI in F2-05. AutoGen was absorbed by Microsoft Agent Framework. The SDK remains framework-agnostic — any agent that can run TypeScript/JavaScript can use it. |
 | 5 | "Is there a contract audit?" | On roadmap: F1-05 static analysis with Slither/Mythril, F3-04 formal verification. The contract is 157 lines with zero dependencies — the audit surface is minimal. |
 | 6 | "What blockchain do you use?" | Any EVM-compatible chain (Ethereum, Polygon, Arbitrum, etc.). The reference implementation uses Polygon for lower gas costs. |
 | 7 | "How do I revoke if I lose my keys?" | Pre-authorized revocation delegates. If the owner loses access, a delegate can revoke. That's why it's critical to configure delegates BEFORE an incident occurs. |
@@ -4593,7 +4593,7 @@ await contract.waitForDeployment();
 | Live demo | 5 min | `create → signMessage → signHttp → verifySignature → revoke → verify fails` | Have script prepared, don't improvise |
 | Architecture | 3 min | Hybrid on-chain/off-chain diagram | Use the layer diagram from Module 1 |
 | RFC-001 | 2 min | Open standard, 16/16 controls passing | Run `npm run conformance:rfc001` live |
-| Roadmap | 2 min | Python SDK, LangChain plugin, ZKPs, W3C submission | Show backlog on GitHub |
+| Roadmap | 2 min | Python SDK, LangChain integration, ZKPs, W3C submission | Show backlog on GitHub |
 | Call to action | 1 min | Contribute, use, give feedback | Have QR with repo |
 
 ### Talking Points for the community
@@ -4602,7 +4602,7 @@ await contract.waitForDeployment();
 - "We have 16 conformance controls verified in CI"
 - "The contract supports revocation delegation — enterprise governance model"
 - "All crypto operations use audited libraries — we don't reinvent the wheel"
-- "The roadmap includes Python SDK, agent framework plugins, and W3C submission"
+- "The roadmap includes Python SDK, agent framework integrations, and W3C submission"
 - "157 lines of Solidity, zero dependencies — maximum auditability"
 - "On-chain/off-chain separation — only the essentials go to the blockchain"
 

@@ -24,8 +24,10 @@ Open an Issue tagged `[RFC]` to start a discussion.
 2. Create a branch from `master` (`git checkout -b feature/your-feature`).
 3. Write code + tests. Ensure `npm test` passes in the relevant package.
 4. Run conformance: `npm run conformance:rfc001` from the project root.
-5. Commit with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat(sdk): add batch DID resolution`).
-6. Open a Pull Request against `master`.
+5. If you touch the LangChain integration, also run `npm run test:langchain` from the project root.
+6. If you touch the Solidity contract or audit automation, also run `npm run audit:contracts` with Docker running.
+7. Commit with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat(sdk): add batch DID resolution`).
+8. Open a Pull Request against `master`.
 
 ### 3. Improve Documentation
 
@@ -43,12 +45,20 @@ The project follows a 3-phase roadmap. Items marked with **🔓 Open** are activ
 |---|---|---|---|
 | F1-01 | Publish SDK to npm as `@agent-did/sdk` | Technical | ✅ Done |
 | F1-02 | Translate all docs to English | Documentation | ✅ Done |
-| F1-03 | **LangChain plugin** — inject Agent-DID identity into agent chains | Integration | 🔓 Open |
+| F1-03 | **LangChain integration** — inject Agent-DID identity into agent chains | Integration | ✅ Done |
 | F1-04 | **Submit RFC-001 to DIF** (Decentralized Identity Foundation) | Standards | 🔓 Open |
-| F1-05 | **Automated smart contract audit** (Slither/Mythril) | Security | 🔓 Open |
+| F1-05 | **Automated smart contract audit** (Slither/Mythril) | Security | ✅ Done |
 | F1-06 | **CI/CD pipeline** with GitHub Actions (build + test + conformance per PR) | DevOps | ✅ Done |
 
 GitHub Actions now installs the repository workspaces and runs the RFC-001 conformance suite from `.github/workflows/ci.yml` on pushes, pull requests, and manual dispatches.
+
+The same workflow also installs and tests the LangChain integration package in `integrations/langchain`.
+
+Smart contract static audit automation is available through `.github/workflows/contract-audit.yml`, which runs Slither and Mythril via Docker and publishes the generated reports as workflow artifacts.
+
+Current audit triage notes are available in [docs/F1-05-Contract-Audit-Triage.md](docs/F1-05-Contract-Audit-Triage.md). Formal third-party review is still tracked separately under F3-04.
+
+The implemented LangChain package lives in [integrations/langchain/README.md](integrations/langchain/README.md).
 
 ### Phase 2 — Ecosystem Expansion (3-6 months)
 
@@ -57,8 +67,8 @@ GitHub Actions now installs the repository workspaces and runs the RFC-001 confo
 | F2-01 | **Python SDK** with feature parity | Technical | 🔓 Open |
 | F2-02 | **Google A2A proof-of-concept** — Agent-DID as identity layer for A2A | Integration | 🔓 Open |
 | F2-03 | **Production resolver** with persistent backend (IPFS/Arweave + HTTP) | Technical | 🔓 Open |
-| F2-04 | **Microsoft Agent Framework (Semantic Kernel) plugin** | Integration | 🔓 Open |
-| F2-05 | **CrewAI plugin** | Integration | 🔓 Open |
+| F2-04 | **Microsoft Agent Framework (Semantic Kernel) integration** | Integration | 🔓 Open |
+| F2-05 | **CrewAI integration** | Integration | 🔓 Open |
 | F2-06 | **Public testnet deployment** with documentation | Infrastructure | 🔓 Open |
 | F2-07 | Publish theoretical paper as formal whitepaper | Marketing | 🔓 Open |
 | F2-08 | **Azure AI Agent Service integration** | Integration | 🔓 Open |
@@ -87,12 +97,19 @@ cd Agent-citizen-identification
 npm install
 npm --prefix sdk install
 npm --prefix contracts install
+npm --prefix integrations/langchain install
 
 # Run SDK tests
 cd sdk && npm test
 
+# Run LangChain integration tests
+cd .. && npm run test:langchain
+
+# Run contract audit automation
+npm run audit:contracts
+
 # Run full conformance
-cd .. && npm run conformance:rfc001
+npm run conformance:rfc001
 ```
 
 ### Requirements
@@ -112,7 +129,7 @@ When opening an issue, use one of these tags in the title:
 | `[SDK-TS]` | TypeScript SDK bugs, features, improvements |
 | `[SDK-PY]` | Python SDK development (F2-01) |
 | `[Contract]` | Smart contract changes, audit findings |
-| `[Integration]` | Framework plugins (LangChain, CrewAI, A2A) |
+| `[Integration]` | Framework integrations (LangChain, CrewAI, A2A) |
 | `[DevOps]` | CI/CD, testing infrastructure |
 | `[Docs]` | Documentation improvements |
 | `[Idea]` | New features, use cases, or research proposals |

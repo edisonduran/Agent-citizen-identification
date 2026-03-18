@@ -31,6 +31,7 @@ jobs:
             package-lock.json
             sdk/package-lock.json
             contracts/package-lock.json
+            integrations/langchain/package-lock.json
 
       - name: Install root dependencies
         run: npm ci
@@ -40,6 +41,12 @@ jobs:
 
       - name: Install contract dependencies
         run: npm --prefix contracts ci
+
+      - name: Install LangChain integration dependencies
+        run: npm --prefix integrations/langchain ci
+
+      - name: Run LangChain integration tests
+        run: npm run test:langchain
 
       - name: Run RFC-001 conformance suite
         run: npm run conformance:rfc001

@@ -1,0 +1,16 @@
+[project]
+name = "agent-did-crewai"
+version = "0.0.0"
+description = "Design scaffold for the future Agent-DID integration with CrewAI."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Edison Munoz", email = "edison.munoz@agent-did.org" }
+]
+dependencies = []
+
+[tool.agent-did]
+status = "design-scaffold"
+roadmap = "F2-05"
+implementation = "pending"

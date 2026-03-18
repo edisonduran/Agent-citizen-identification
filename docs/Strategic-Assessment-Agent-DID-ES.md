@@ -94,7 +94,7 @@ El proyecto ocupa un espacio estratégico de altísimo valor y prácticamente si
 | BT-01 | Resolver en memoria por defecto (no persistente) | No apto para producción real | Alta | Implementar backend persistente (Redis/IPFS/Arweave) |
 | BT-02 | Sin auditoría de seguridad del contrato | Riesgo para despliegue en mainnet | Alta | Auditoría con Slither/Mythril como mínimo; auditoría formal para mainnet |
 | BT-03 | Sin ZKP implementado | El paper teórico los menciona pero el SDK no los soporta | Media | Integrar librería ZKP (snarkjs o similar) para verificación de capabilities |
-| BT-04 | Sin integración con frameworks de agentes | Limita adopción inmediata | Alta | Plugins para LangChain, CrewAI, Microsoft Agent Framework |
+| BT-04 | Sin integración con frameworks de agentes | Limita adopción inmediata | Alta | Integraciones para LangChain, CrewAI, Microsoft Agent Framework |
 | BT-05 | Sin soporte Python | Excluye el ecosistema dominante de IA/ML | Media-Alta | SDK Python como prioridad P2 |
 | BT-06 | Sin CI/CD observable | Pruebas corren localmente; no hay pipeline automatizado | Media | GitHub Actions con conformance automatizada |
 | BT-07 | RFC auto-dirigido, no ratificado | Sin respaldo de cuerpo de estándares | Media | Someter a DIF o W3C para revisión |
@@ -166,7 +166,7 @@ El proyecto ocupa un espacio estratégico de altísimo valor y prácticamente si
 | ID | Barrera | Severidad | Estrategia de mitigación |
 |---|---|---|---|
 | BA-01 | Efecto red — DIDs necesitan masa crítica de verificadores/emisores | Alta | Alianzas con plataformas de agentes (LangChain, CrewAI, Microsoft Agent Framework) |
-| BA-02 | Sin integración con frameworks dominantes de IA | Alta | Desarrollar plugins/middleware como prioridad P1 (LangChain) y F2 (Microsoft Agent Framework, CrewAI) |
+| BA-02 | Sin integración con frameworks dominantes de IA | Alta | Desarrollar integraciones/middleware como prioridad P1 (LangChain) y F2 (Microsoft Agent Framework, CrewAI) |
 | BA-03 | Estándar no ratificado por W3C/DIF/IETF | Media | Someter RFC a DIF; participar en working groups |
 | BA-04 | Ecosistema Python-first en IA | Media-Alta | SDK Python con paridad de funcionalidad |
 | BA-05 | Educación del mercado | Media | El curso de 2h y el paper teórico son buenos activos iniciales |
@@ -198,10 +198,12 @@ El proyecto ocupa un espacio estratégico de altísimo valor y prácticamente si
 |---|---|---|---|
 | F1-01 | Publicar SDK en npm como `@agent-did/sdk` open-source | Técnico | Visibilidad + adopción orgánica |
 | F1-02 | Traducir README y docs clave a inglés | Documentación | Alcance global |
-| F1-03 | Crear plugin para LangChain que inyecte identidad Agent-DID | Integración | Acceso al ecosistema de agentes más grande |
+| F1-03 | Entregar integración para LangChain que inyecte identidad Agent-DID | Integración | Acceso al ecosistema de agentes más grande |
 | F1-04 | Someter RFC-001 a DIF (Decentralized Identity Foundation) | Estándares | Credibilidad institucional |
 | F1-05 | Auditoría automatizada del smart contract (Slither/Mythril) | Seguridad | Prerequisito para mainnet |
 | F1-06 | Pipeline CI/CD con GitHub Actions | DevOps | Conformance automatizada por PR |
+
+Estado actual: F1-03 ya fue completado y la implementación está disponible en [../integrations/langchain/README.md](../integrations/langchain/README.md).
 
 ### Fase 2 — Expansión de ecosistema (3-6 meses)
 
@@ -210,8 +212,8 @@ El proyecto ocupa un espacio estratégico de altísimo valor y prácticamente si
 | F2-01 | SDK Python con paridad de funcionalidad | Técnico | Penetrar ecosistema dominante de IA/ML |
 | F2-02 | Integración proof-of-concept con Google A2A | Integración | Demostrar identidad en comunicación A2A |
 | F2-03 | Resolver de producción con backend real (IPFS/Arweave + HTTP) | Técnico | Production-readiness |
-| F2-04 | Plugin para Microsoft Agent Framework (Semantic Kernel) | Integración | Acceso al ecosistema enterprise de Microsoft — cubre AutoGen (absorbido por Microsoft) |
-| F2-05 | Plugin para CrewAI | Integración | Cobertura del framework independiente de agentes más popular |
+| F2-04 | Integración para Microsoft Agent Framework (Semantic Kernel) | Integración | Acceso al ecosistema enterprise de Microsoft — cubre AutoGen (absorbido por Microsoft) |
+| F2-05 | Integración para CrewAI | Integración | Cobertura del framework independiente de agentes más popular |
 | F2-06 | Despliegue en testnet pública con documentación | Infraestructura | Validación en entorno real |
 | F2-07 | Publicación de paper teórico como whitepaper formal | Marketing | Credibilidad técnica |
 | F2-08 | Explorar integración con Azure AI Agent Service | Integración | Identity layer para agentes hospedados en Azure |
