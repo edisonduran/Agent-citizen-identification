@@ -5,6 +5,7 @@ build/
 .DS_Store
 coverage/
 *.log
+.vscode/settings.json
 
 # BMAD Method artifacts
 _bmad/
