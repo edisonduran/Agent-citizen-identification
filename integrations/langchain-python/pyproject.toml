@@ -1,16 +1,67 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "agent-did-langchain"
-version = "0.0.0"
-description = "Design scaffold for the Python Agent-DID integration with LangChain."
+version = "0.1.0"
+description = "LangChain Python integration for Agent-DID identities, context injection and secure tool exposure."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
 authors = [
-  { name = "Edison Munoz", email = "edison.munoz@agent-did.org" }
+  { name = "Agent-citizen-identification contributors" }
 ]
-dependencies = []
+keywords = ["agent-did", "langchain", "python", "did", "identity", "tool-calling"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security :: Cryptography",
+  "Typing :: Typed",
+]
+dependencies = [
+  "agent-did-sdk>=0.1.0",
+  "langchain>=1.2.13,<1.3",
+  "langchain-core>=1.2.20,<1.3",
+  "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2",
+  "pytest>=8.0",
+  "pytest-asyncio>=0.23",
+  "ruff>=0.4",
+  "mypy>=1.10",
+]
+
+[project.urls]
+Homepage = "https://github.com/edisonduran/Agent-citizen-identification"
+Repository = "https://github.com/edisonduran/Agent-citizen-identification"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP"]
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
 
 [tool.agent-did]
-status = "design-scaffold"
+status = "mvp"
 language = "python"
-depends_on = "implementation"
+depends_on = "agent-did-sdk"

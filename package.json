@@ -1,10 +1,14 @@
 {
   "scripts": {
     "audit:contracts": "node scripts/contract-audit.js",
+    "langchain-python:install-dev": "cd sdk-python && python -m pip install -e .[dev] && cd ..\\integrations\\langchain-python && python -m pip install -e .[dev]",
+    "lint:langchain-python": "python -m ruff check integrations/langchain-python/src integrations/langchain-python/tests integrations/langchain-python/examples",
     "python:install-dev": "cd sdk-python && python -m pip install -e \".[dev]\"",
     "python:test": "cd sdk-python && python -m pytest tests/ -v --tb=short",
     "python:conformance": "cd sdk-python && python scripts/conformance_rfc001.py",
     "test:langchain": "npm --prefix sdk run build && npm --prefix integrations/langchain test",
+    "test:langchain-python": "python -m pytest integrations/langchain-python/tests -q",
+    "typecheck:langchain-python": "python -m mypy integrations/langchain-python/src",
     "smoke:e2e": "node scripts/e2e-smoke.js",
     "smoke:ha": "node scripts/resolver-ha-smoke.js",
     "smoke:policy": "node scripts/revocation-policy-smoke.js",

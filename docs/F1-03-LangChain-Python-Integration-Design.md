@@ -9,7 +9,7 @@ El plan tecnico cerrado derivado de este diseno esta en [F1-03-LangChain-Python-
 ## Estado actual
 
 - Hito relacionado: F1-03 ya completado para la integracion LangChain JS
-- Estado de esta variante: diseno y scaffold inicial
+- Estado de esta variante: MVP funcional implementado
 - Paquete base: [../integrations/langchain-python/README.md](../integrations/langchain-python/README.md)
 - Dependencia previa resuelta: SDK Python de Agent-DID (F2-01)
 - Referencia funcional existente: [../integrations/langchain/README.md](../integrations/langchain/README.md)
@@ -72,6 +72,22 @@ integration = create_agent_did_langchain_integration(
 4. Ejemplo runnable equivalente al paquete JS.
 5. Suite automatizada de pruebas Python.
 
+## Estado del MVP implementado
+
+La implementacion actual ya entrega:
+
+- factory publica `create_agent_did_langchain_integration(...)`
+- snapshot de identidad sin secretos
+- composicion de `system_prompt`
+- tools para identidad actual, resolucion DID y verificacion de firmas
+- firma HTTP opt-in
+- firma de payload opt-in
+- rotacion de claves opt-in
+- rechazo por defecto de destinos HTTP privados o loopback
+- pruebas funcionales y de seguridad del paquete
+
+La readiness actual tambien incluye comandos locales y CI dedicado para el paquete.
+
 ## Riesgos tecnicos
 
 - Riesgo de divergencia entre la API moderna de LangChain Python y la variante JS ya implementada.
@@ -86,7 +102,7 @@ La siguiente iteracion depende de trabajo de implementacion en `integrations/lan
 
 ## Recomendacion actual
 
-La siguiente iteracion deberia portar primero el subconjunto minimo ya probado en JS: identidad actual, resolucion, verificacion y firma HTTP opt-in.
+La siguiente iteracion deberia centrarse en endurecimiento adicional, ejemplos mas ricos y observabilidad, manteniendo la paridad conceptual con JS sin introducir dependencias a APIs privadas de LangChain Python.
 
 ## Criterio de cierre
 

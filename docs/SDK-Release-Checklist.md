@@ -2,7 +2,7 @@
 
 ## Objective
 
-Provide a single repository-level release checklist for the TypeScript SDK in `sdk/` and the Python SDK in `sdk-python/`.
+Provide a single repository-level release checklist for the TypeScript SDK in `sdk/`, the Python SDK in `sdk-python/`, and the official LangChain integration packages.
 
 This checklist is intended for:
 
@@ -18,6 +18,8 @@ Use this checklist whenever a change affects one or more of the following:
 
 - `sdk/**`
 - `sdk-python/**`
+- `integrations/langchain/**`
+- `integrations/langchain-python/**`
 - `fixtures/**`
 - shared RFC-001 lifecycle semantics
 - canonical `documentRef` generation
@@ -73,6 +75,40 @@ Checklist:
 
 ---
 
+## LangChain Integration Checks
+
+### LangChain JS
+
+- [ ] `npm run test:langchain`
+- [ ] If JS integration public API changed, `integrations/langchain/README.md` is updated.
+- [ ] `integrations/langchain/package.json` compatibility targets and publish metadata are correct.
+
+### LangChain Python
+
+Canonical local workflow:
+
+```bash
+cd sdk-python
+python -m pip install -e ".[dev]"
+cd ../integrations/langchain-python
+python -m pip install -e ".[dev]"
+python -m ruff check src/ tests/ examples/
+python -m mypy src/
+python -m pytest tests/ -q
+python -m build
+```
+
+Checklist:
+
+- [ ] `python -m ruff check src/ tests/ examples/`
+- [ ] `python -m mypy src/`
+- [ ] `python -m pytest tests/ -q`
+- [ ] `python -m build`
+- [ ] If Python integration public API changed, `integrations/langchain-python/README.md` is updated.
+- [ ] `integrations/langchain-python/pyproject.toml` metadata and version are correct for the release.
+
+---
+
 ## Cross-SDK Interoperability Checks
 
 - [ ] TypeScript shared-fixture tests pass.
@@ -87,6 +123,7 @@ Checklist:
 
 - [ ] `.github/workflows/ci.yml` remains green for relevant TypeScript changes.
 - [ ] `.github/workflows/ci-python.yml` remains green for relevant Python changes.
+- [ ] `.github/workflows/ci-langchain-python.yml` remains green for relevant LangChain Python changes.
 - [ ] If fixtures changed, both workflows were considered part of the validation surface.
 
 ---
@@ -99,6 +136,10 @@ These monorepo shortcuts are optional helpers, not replacements for stack-native
 npm run python:install-dev
 npm run python:test
 npm run python:conformance
+npm run langchain-python:install-dev
+npm run lint:langchain-python
+npm run typecheck:langchain-python
+npm run test:langchain-python
 npm run conformance:rfc001
 ```
 

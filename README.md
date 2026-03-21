@@ -59,7 +59,7 @@ Includes the same core lifecycle primitives as the TypeScript SDK:
 ## Integrations
 
 - LangChain JS 1.x: implemented in [integrations/langchain/README.md](integrations/langchain/README.md)
-- LangChain Python: design scaffold available in [integrations/langchain-python/README.md](integrations/langchain-python/README.md), ready to build on top of the implemented Python SDK
+- LangChain Python: functional MVP implemented in [integrations/langchain-python/README.md](integrations/langchain-python/README.md), with dedicated tests, opt-in key rotation, and hardened HTTP signing defaults
 - Microsoft Agent Framework (Semantic Kernel): design scaffold available in [integrations/microsoft-agent-framework/README.md](integrations/microsoft-agent-framework/README.md), roadmap item F2-04
 - CrewAI: design scaffold available in [integrations/crewai/README.md](integrations/crewai/README.md), roadmap item F2-05
 - Azure AI Agent Service: planned roadmap item F2-08
@@ -92,6 +92,15 @@ If you are working on the LangChain package, also run:
 
 ```bash
 npm run test:langchain
+```
+
+If you are working on the LangChain Python package, the canonical local workflow is:
+
+```bash
+npm run langchain-python:install-dev
+npm run lint:langchain-python
+npm run typecheck:langchain-python
+npm run test:langchain-python
 ```
 
 If you are working on the Python SDK, the canonical local workflow is:
@@ -185,7 +194,7 @@ The LangChain integration is available in [integrations/langchain/README.md](int
 
 The next Python-focused consolidation track is semantic parity: canonical `documentRef` generation, shared cross-language fixtures, and keeping the separate Python CI aligned with the TypeScript quality bar.
 
-The next Python integration track is implementation of the LangChain Python scaffold, with execution steps documented in [docs/F1-03-LangChain-Python-Implementation-Checklist.md](docs/F1-03-LangChain-Python-Implementation-Checklist.md).
+The next Python integration track is hardening and release maturation of LangChain Python, with execution steps documented in [docs/F1-03-LangChain-Python-Implementation-Checklist.md](docs/F1-03-LangChain-Python-Implementation-Checklist.md).
 
 ### Phase 3 — Maturity & Standardization (6-12 months)
 

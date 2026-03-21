@@ -6,8 +6,8 @@ Esta integracion implementa el enfoque recomendado por la API moderna de LangCha
 
 ## Compatibilidad objetivo
 
-- `langchain` `^1.2.32`
-- `@langchain/core` `^1.1.32`
+- `langchain` `^1.2.35`
+- `@langchain/core` `^1.1.34`
 - `@agent-did/sdk` `^0.1.0`
 - Node.js 20+
 
