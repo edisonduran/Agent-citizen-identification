@@ -2,10 +2,6 @@ import { hashPayload, formatHashUri, generateAgentMetadataHash } from '../src/cr
 
 describe('Crypto Hash Module', () => {
   const samplePrompt = "You are a helpful customer support agent.";
-  
-  // The expected SHA-256 hash for the sample prompt (calculated externally for verification)
-  // "You are a helpful customer support agent." -> SHA256
-  const expectedHash = "0x8b8f8e8d8c8b8a898887868584838281807f7e7d7c7b7a797877767574737271"; // Placeholder, will be dynamic in real test
 
   it('should generate a deterministic hash for a given payload', () => {
     const hash1 = hashPayload(samplePrompt);

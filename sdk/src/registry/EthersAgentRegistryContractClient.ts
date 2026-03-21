@@ -2,6 +2,13 @@ import { AgentRegistryRecord } from './types';
 import { EvmAgentRegistryContract, EvmTxResponse } from './evm-types';
 import { normalizeTimestampToIso } from '../core/time';
 
+function safeStr(v: unknown): string {
+  if (v === null || v === undefined) return '';
+  if (typeof v === 'string') return v;
+  if (typeof v === 'number' || typeof v === 'bigint') return v.toString();
+  return '';
+}
+
 interface EthersLikeContract {
   registerAgent?: (did: string, controller: string, documentRef?: string) => Promise<EvmTxResponse | void>;
   setDocumentRef?: (did: string, documentRef: string) => Promise<EvmTxResponse | void>;
@@ -55,11 +62,11 @@ export class EthersAgentRegistryContractClient implements EvmAgentRegistryContra
     if (Array.isArray(rawRecord)) {
       const [recordDid, controller, createdAt, revokedAt, documentRef] = rawRecord;
       return {
-        did: String(recordDid),
-        controller: String(controller),
-        createdAt: normalizeTimestampToIso(String(createdAt)) || String(createdAt),
-        revokedAt: normalizeTimestampToIso(String(revokedAt || '')),
-        documentRef: String(documentRef || '') || undefined
+        did: safeStr(recordDid),
+        controller: safeStr(controller),
+        createdAt: normalizeTimestampToIso(safeStr(createdAt)) || safeStr(createdAt),
+        revokedAt: normalizeTimestampToIso(safeStr(revokedAt)),
+        documentRef: safeStr(documentRef) || undefined
       };
     }
 
@@ -71,12 +78,12 @@ export class EthersAgentRegistryContractClient implements EvmAgentRegistryContra
       typeof record.controller === 'string'
     ) {
       return {
-        did: String(record.did),
-        controller: String(record.controller),
-        createdAt: normalizeTimestampToIso(String(record.createdAt ?? ''))
-          || String(record.createdAt ?? ''),
-        revokedAt: normalizeTimestampToIso(String(record.revokedAt ?? '')),
-        documentRef: record.documentRef ? String(record.documentRef) : undefined
+        did: record.did,
+        controller: record.controller,
+        createdAt: normalizeTimestampToIso(safeStr(record.createdAt))
+          || safeStr(record.createdAt),
+        revokedAt: normalizeTimestampToIso(safeStr(record.revokedAt)),
+        documentRef: record.documentRef ? safeStr(record.documentRef) : undefined
       };
     }
 

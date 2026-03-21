@@ -1,6 +1,6 @@
-const { spawn, execSync } = require('child_process');
-const http = require('http');
-const path = require('path');
+const { spawn, execSync } = require('node:child_process');
+const http = require('node:http');
+const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const CONTRACTS_DIR = path.join(ROOT, 'contracts');

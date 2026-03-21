@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 const { SDK_DIST, createJsonRpcServer } = require('./smoke-utils');
 
 async function main() {
