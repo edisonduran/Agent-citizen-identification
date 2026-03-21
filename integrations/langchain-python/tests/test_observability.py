@@ -12,6 +12,8 @@ from agent_did_langchain.observability import (
     AgentDidObservabilityEvent,
     compose_event_handlers,
     create_json_logger_event_handler,
+    create_langsmith_event_handler,
+    create_langsmith_run_tree,
 )
 
 
@@ -174,3 +176,66 @@ def test_json_logger_event_handler_emits_structured_sanitized_payload() -> None:
     assert record["attributes"]["url"] == "https://api.example.com/path"
     assert record["component"] == "tests"
     assert record["payload"] == {"redacted": True, "length": 13}
+
+
+def test_langsmith_event_handler_tracks_tool_run_lifecycle() -> None:
+    root_run = create_langsmith_run_tree(
+        name="agent_did_root",
+        inputs={"url": "https://api.example.com/tasks?token=secret"},
+        tags=["tests"],
+    )
+    handler = create_langsmith_event_handler(
+        root_run,
+        include_timestamp=False,
+        extra_fields={"service": "tests", "payload": "should-redact"},
+        tags=["langsmith"],
+    )
+
+    handler(
+        AgentDidObservabilityEvent(
+            event_type="agent_did.tool.started",
+            attributes={
+                "tool_name": "agent_did_sign_payload",
+                "did": "did:agent:test:123",
+                "inputs": {"payload": "very-secret-payload"},
+            },
+        )
+    )
+    handler(
+        AgentDidObservabilityEvent(
+            event_type="agent_did.tool.succeeded",
+            attributes={
+                "tool_name": "agent_did_sign_payload",
+                "did": "did:agent:test:123",
+                "outputs": {"signature_generated": True, "key_id": "key-1"},
+            },
+        )
+    )
+
+    assert root_run.inputs["url"] == "https://api.example.com/tasks"
+    assert len(root_run.child_runs) == 1
+
+    child_run = root_run.child_runs[0]
+    assert child_run.name == "agent_did_sign_payload"
+    assert child_run.run_type == "tool"
+    assert child_run.inputs["inputs"]["payload"] == {"redacted": True, "length": 19}
+    assert child_run.outputs["attributes"]["outputs"]["signature_generated"] is True
+    assert child_run.extra["source"] == "agent_did_langchain"
+
+
+def test_langsmith_event_handler_creates_chain_run_for_snapshot_event() -> None:
+    root_run = create_langsmith_run_tree(name="agent_did_snapshot_root")
+    handler = create_langsmith_event_handler(root_run, include_timestamp=False)
+
+    handler(
+        AgentDidObservabilityEvent(
+            event_type="agent_did.identity_snapshot.refreshed",
+            attributes={"did": "did:agent:test:321", "reason": "compose_system_prompt"},
+        )
+    )
+
+    assert len(root_run.child_runs) == 1
+    child_run = root_run.child_runs[0]
+    assert child_run.name == "agent_did.identity_snapshot.refreshed"
+    assert child_run.run_type == "chain"
+    assert child_run.outputs["attributes"]["reason"] == "compose_system_prompt"

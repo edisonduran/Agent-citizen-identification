@@ -98,6 +98,204 @@ def create_json_logger_event_handler(
     return log_event
 
 
+def create_langsmith_run_tree(
+    *,
+    name: str,
+    project_name: str = "agent-did-langchain",
+    run_type: str = "chain",
+    inputs: Mapping[str, Any] | None = None,
+    tags: list[str] | None = None,
+    extra: Mapping[str, Any] | None = None,
+    client: Any | None = None,
+) -> Any:
+    """Create a LangSmith RunTree with sanitized root inputs and metadata."""
+
+    try:
+        from langsmith.run_trees import RunTree
+    except ImportError as error:  # pragma: no cover - depends on optional runtime package
+        raise RuntimeError("LangSmith is required for the LangSmith observability adapter") from error
+
+    return RunTree(
+        name=name,
+        run_type=run_type,
+        project_name=project_name,
+        inputs=sanitize_observability_attributes(inputs or {}),
+        tags=list(tags or []),
+        extra=sanitize_observability_attributes(extra or {}),
+        ls_client=client,
+    )
+
+
+def create_langsmith_event_handler(
+    run_tree: Any,
+    *,
+    source: str = "agent_did_langchain",
+    include_timestamp: bool = True,
+    extra_fields: Mapping[str, Any] | None = None,
+    tags: list[str] | None = None,
+    post_immediately: bool = False,
+) -> AgentDidEventHandler:
+    """Create a LangSmith handler that maps Agent-DID events into a RunTree."""
+
+    active_tool_runs: dict[tuple[str, str], Any] = {}
+    normalized_tags = list(tags or [])
+
+    def handle_event(event: AgentDidObservabilityEvent) -> None:
+        record = serialize_observability_event(
+            event,
+            source=source,
+            include_timestamp=include_timestamp,
+            extra_fields=extra_fields,
+        )
+        attributes = record["attributes"]
+        tool_name = attributes.get("tool_name")
+        did = attributes.get("did")
+        event_type = event.event_type
+
+        try:
+            run_tree.add_event(record)
+        except Exception:
+            pass
+
+        if _is_langsmith_tool_event(tool_name, did, event_type):
+            _handle_langsmith_tool_event(
+                run_tree,
+                active_tool_runs,
+                normalized_tags,
+                source,
+                post_immediately,
+                tool_name,
+                did,
+                event_type,
+                attributes,
+                record,
+            )
+            return
+
+        _handle_langsmith_generic_event(
+            run_tree,
+            normalized_tags,
+            source,
+            post_immediately,
+            event_type,
+            attributes,
+            record,
+        )
+
+    return handle_event
+
+
+def _is_langsmith_tool_event(tool_name: Any, did: Any, event_type: str) -> bool:
+    return isinstance(tool_name, str) and isinstance(did, str) and event_type.startswith("agent_did.tool.")
+
+
+def _create_langsmith_child_run(
+    run_tree: Any,
+    *,
+    name: str,
+    run_type: str,
+    inputs: dict[str, Any],
+    tags: list[str],
+    source: str,
+    event_type: str,
+) -> Any:
+    child_run = run_tree.create_child(
+        name=name,
+        run_type=run_type,
+        inputs=inputs,
+        tags=tags,
+        extra={"source": source, "agent_did_event_type": event_type},
+    )
+    run_tree.child_runs.append(child_run)
+    return child_run
+
+
+def _handle_langsmith_tool_event(
+    run_tree: Any,
+    active_tool_runs: dict[tuple[str, str], Any],
+    normalized_tags: list[str],
+    source: str,
+    post_immediately: bool,
+    tool_name: str,
+    did: str,
+    event_type: str,
+    attributes: dict[str, Any],
+    record: dict[str, Any],
+) -> None:
+    run_key = (tool_name, did)
+    child_run = active_tool_runs.get(run_key)
+
+    if event_type.endswith(".started"):
+        child_run = _create_langsmith_child_run(
+            run_tree,
+            name=tool_name,
+            run_type="tool",
+            inputs={"did": did, "inputs": attributes.get("inputs", {}), "event_type": event_type},
+            tags=[*normalized_tags, "agent-did", "tool"],
+            source=source,
+            event_type=event_type,
+        )
+        child_run.add_event(record)
+        active_tool_runs[run_key] = child_run
+        return
+
+    if child_run is None:
+        child_run = _create_langsmith_child_run(
+            run_tree,
+            name=tool_name,
+            run_type="tool",
+            inputs={"did": did, "event_type": event_type},
+            tags=[*normalized_tags, "agent-did", "tool"],
+            source=source,
+            event_type=event_type,
+        )
+
+    child_run.add_event(record)
+    _finalize_langsmith_child_run(child_run, did=did, event_type=event_type, attributes=attributes)
+
+    active_tool_runs.pop(run_key, None)
+    if post_immediately:
+        child_run.post()
+
+
+def _finalize_langsmith_child_run(
+    child_run: Any,
+    *,
+    did: str,
+    event_type: str,
+    attributes: dict[str, Any],
+) -> None:
+    outputs = {"did": did, "event_type": event_type, "attributes": attributes}
+    if event_type.endswith(".failed"):
+        child_run.end(error=str(attributes.get("error") or "unknown error"), outputs=outputs)
+        return
+    child_run.end(outputs=outputs)
+
+
+def _handle_langsmith_generic_event(
+    run_tree: Any,
+    normalized_tags: list[str],
+    source: str,
+    post_immediately: bool,
+    event_type: str,
+    attributes: dict[str, Any],
+    record: dict[str, Any],
+) -> None:
+    child_run = _create_langsmith_child_run(
+        run_tree,
+        name=event_type,
+        run_type="chain",
+        inputs={"event_type": event_type, "attributes": attributes},
+        tags=[*normalized_tags, "agent-did", "event"],
+        source=source,
+        event_type=event_type,
+    )
+    child_run.add_event(record)
+    child_run.end(outputs={"event_type": event_type, "attributes": attributes})
+    if post_immediately:
+        child_run.post()
+
+
 def sanitize_observability_attributes(attributes: Mapping[str, Any]) -> dict[str, Any]:
     """Redact sensitive values before events leave the integration boundary."""
 

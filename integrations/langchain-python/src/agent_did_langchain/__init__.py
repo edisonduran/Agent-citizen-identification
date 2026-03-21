@@ -8,6 +8,8 @@ from .observability import (
     AgentDidObservabilityEvent,
     compose_event_handlers,
     create_json_logger_event_handler,
+    create_langsmith_event_handler,
+    create_langsmith_run_tree,
     sanitize_observability_attributes,
     serialize_observability_event,
 )
@@ -31,6 +33,8 @@ __all__ = [
     "create_agent_did_langchain_integration",
     "create_agent_did_tools",
     "create_json_logger_event_handler",
+    "create_langsmith_event_handler",
+    "create_langsmith_run_tree",
     "sanitize_observability_attributes",
     "serialize_observability_event",
 ]

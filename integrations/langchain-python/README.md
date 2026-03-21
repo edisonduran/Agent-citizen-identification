@@ -100,6 +100,8 @@ Si quiere reutilizar adaptadores listos para usar sin cambiar la API base, el pa
 
 - `compose_event_handlers(...)`: combina varios sinks/callbacks en un solo `observability_handler`.
 - `create_json_logger_event_handler(logger, ...)`: emite cada evento como un registro JSON saneado, apto para pipelines de logging estructurado.
+- `create_langsmith_run_tree(...)`: crea un `RunTree` local con inputs saneados para usarlo como raiz de tracing.
+- `create_langsmith_event_handler(run_tree, ...)`: proyecta eventos Agent-DID en child runs de LangSmith, sin cambiar la factory principal.
 - `serialize_observability_event(...)`: convierte un evento en un diccionario serializable para integrarlo con otros sistemas.
 
 Ejemplo de logging JSON estructurado:
@@ -120,6 +122,22 @@ integration = create_agent_did_langchain_integration(
         logger,
         extra_fields={"service": "agent-gateway", "environment": "dev"},
     ),
+)
+```
+
+Ejemplo de LangSmith sin cambiar la API base:
+
+```python
+from agent_did_langchain import create_agent_did_langchain_integration
+from agent_did_langchain.observability import create_langsmith_event_handler, create_langsmith_run_tree
+
+root_run = create_langsmith_run_tree(name="agent_did_demo", inputs={"scenario": "local"})
+
+integration = create_agent_did_langchain_integration(
+    agent_identity=agent_identity,
+    runtime_identity=runtime_identity,
+    expose={"sign_http": True, "sign_payload": True},
+    observability_handler=create_langsmith_event_handler(root_run),
 )
 ```
 
@@ -194,6 +212,8 @@ El plan tecnico cerrado por archivos, versiones objetivo y criterios de aceptaci
 - `examples/agent_did_langchain_example.py`: quick start runnable.
 - `examples/agent_did_langchain_observability_example.py`: callback tracing y redaccion segura.
 - `examples/agent_did_langchain_secure_http_example.py`: firma HTTP verificable end-to-end.
+- `examples/agent_did_langchain_langsmith_example.py`: tracing local sobre `RunTree` de LangSmith con child runs saneados.
+- `examples/agent_did_langchain_multitool_agent_example.py`: flujo `create_agent(...)` con fake chat model y varias tools Agent-DID.
 
 ## Criterios de implementacion
 
@@ -219,12 +239,15 @@ El plan tecnico cerrado por archivos, versiones objetivo y criterios de aceptaci
 - `examples/agent_did_langchain_observability_example.py`: muestra eventos estructurados y la redaccion aplicada a inputs sensibles.
 - `examples/agent_did_langchain_secure_http_example.py`: firma HTTP, devuelve headers verificables y valida la firma con el SDK Python.
 - `examples/agent_did_langchain_json_logging_example.py`: emite eventos saneados como logs JSON listos para agregacion.
+- `examples/agent_did_langchain_langsmith_example.py`: convierte eventos Agent-DID en child runs de LangSmith sin requerir cambios en la factory.
+- `examples/agent_did_langchain_multitool_agent_example.py`: ejecuta `create_agent(...)` localmente con un fake chat model y muestra un recorrido multi-tool reproducible.
 
 ## Troubleshooting rapido
 
 - Si una tool devuelve `error`, revise el evento `agent_did.tool.failed` para ver el contexto ya redactado.
 - Si necesita correlacion entre prompt y snapshot de identidad, observe `agent_did.identity_snapshot.refreshed`.
 - Si `sign_http_request` falla con targets locales, confirme si debe habilitar explicitamente `allow_private_network_targets=True`.
+- Si usa LangSmith, cree un `RunTree` local y conectelo mediante `create_langsmith_event_handler(...)`.
 - Si usa un backend externo de observabilidad, conectelo mediante `observability_handler` o `logger` en lugar de leer secretos desde outputs de tools.
 
 ## Validacion local recomendada
