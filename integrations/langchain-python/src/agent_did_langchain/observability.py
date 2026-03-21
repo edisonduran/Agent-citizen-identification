@@ -6,7 +6,7 @@ import json
 import logging
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 from urllib.parse import urlsplit, urlunsplit
 
@@ -71,7 +71,7 @@ def serialize_observability_event(
         "attributes": sanitize_observability_attributes(event.attributes),
     }
     if include_timestamp:
-        record["timestamp"] = datetime.now(UTC).isoformat()
+        record["timestamp"] = datetime.now(timezone.utc).isoformat()
     if extra_fields:
         record.update(sanitize_observability_attributes(extra_fields))
     return record
