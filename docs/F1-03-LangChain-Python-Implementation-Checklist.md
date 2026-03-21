@@ -65,6 +65,16 @@ The remaining work is implementation work inside `integrations/langchain-python/
 - [x] Add package-level release checks aligned with `docs/SDK-Release-Checklist.md`.
 - [x] Add CI coverage if the package becomes executable and testable.
 
+### Phase 6 — Observability and Operationalization
+
+- [x] Add vendor-neutral observability hooks with secret redaction.
+- [x] Add structured JSON logging adapter.
+- [x] Add LangSmith adapter without changing the public factory.
+- [x] Support handler composition for fan-out to multiple sinks.
+- [x] Add runnable observability examples.
+- [x] Add a production-oriented opt-in example using environment configuration and a real model path.
+- [x] Document operational observability recipes in the package README.
+
 ---
 
 ## Definition of Done
@@ -83,6 +93,9 @@ The LangChain Python integration is ready when all of the following are true:
 - The package now includes opt-in key rotation.
 - HTTP signing rejects insecure schemes and private or loopback targets by default.
 - Dedicated CI coverage is expected in `.github/workflows/ci-langchain-python.yml`.
+- The package now includes vendor-neutral observability, JSON logging, LangSmith adapters and handler fan-out.
+- The package README now documents operational recipes for local debugging, structured logging, LangSmith and composed sinks.
+- A production-oriented opt-in example now exists for real-model execution via environment variables.
 
 ---
 

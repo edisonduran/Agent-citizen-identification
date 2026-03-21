@@ -167,6 +167,139 @@ integration = create_agent_did_langchain_integration(
 )
 ```
 
+## Recetas operativas
+
+### Receta 1: callback local para debugging rapido
+
+Use esta receta cuando quiera inspeccionar rapidamente el flujo de tools en desarrollo local o tests.
+
+```python
+events = []
+
+integration = create_agent_did_langchain_integration(
+    agent_identity=agent_identity,
+    runtime_identity=runtime_identity,
+    observability_handler=lambda event: events.append(
+        {
+            "event_type": event.event_type,
+            "level": event.level,
+            "attributes": event.attributes,
+        }
+    ),
+)
+```
+
+Util para:
+
+- inspeccionar `agent_did.tool.failed`
+- validar que la redaccion de payloads y headers aplica correctamente
+- correlacionar snapshots de identidad con llamadas de tools
+
+### Receta 2: logging JSON estructurado para agregacion
+
+Use esta receta cuando quiera enviar observabilidad a archivos, stdout estructurado o pipelines centralizados.
+
+```python
+import logging
+
+from agent_did_langchain.observability import create_json_logger_event_handler
+
+logger = logging.getLogger("agent_did_langchain")
+logger.setLevel(logging.INFO)
+
+integration = create_agent_did_langchain_integration(
+    agent_identity=agent_identity,
+    runtime_identity=runtime_identity,
+    observability_handler=create_json_logger_event_handler(
+        logger,
+        extra_fields={"service": "agent-gateway", "environment": "prod"},
+    ),
+)
+```
+
+Use esta salida cuando necesite:
+
+- enviar eventos a collectors sin parsear texto libre
+- correlacionar eventos por `service`, `environment` o metadata propia
+- mantener saneamiento de secretos antes del borde de logging
+
+### Receta 3: LangSmith para tracing de tools
+
+Use esta receta cuando quiera conservar la API publica del paquete y proyectar los eventos Agent-DID como child runs en LangSmith.
+
+```python
+from agent_did_langchain.observability import create_langsmith_event_handler, create_langsmith_run_tree
+
+root_run = create_langsmith_run_tree(
+    name="agent_did_production_session",
+    project_name="agent-did-langchain",
+    inputs={"scenario": "tool-tracing"},
+    tags=["agent-did", "production"],
+)
+
+integration = create_agent_did_langchain_integration(
+    agent_identity=agent_identity,
+    runtime_identity=runtime_identity,
+    observability_handler=create_langsmith_event_handler(root_run),
+)
+```
+
+Use LangSmith cuando necesite:
+
+- seguir tool runs individuales con contexto saneado
+- conservar el arbol de ejecucion para debugging de agentes
+- auditar secuencias multi-tool sin leer secretos desde prompts u outputs
+
+### Receta 4: fan-out a varios sinks
+
+Use esta receta cuando necesite callback local, logging JSON y LangSmith al mismo tiempo.
+
+```python
+from agent_did_langchain.observability import (
+    compose_event_handlers,
+    create_json_logger_event_handler,
+    create_langsmith_event_handler,
+    create_langsmith_run_tree,
+)
+
+root_run = create_langsmith_run_tree(name="agent_did_fanout", inputs={"scenario": "fanout"})
+
+observability_handler = compose_event_handlers(
+    local_events.append,
+    create_json_logger_event_handler(logger, extra_fields={"sink": "json"}),
+    create_langsmith_event_handler(root_run, extra_fields={"sink": "langsmith"}),
+)
+```
+
+Esta es la receta recomendada cuando quiera:
+
+- debugging local y trazabilidad remota en paralelo
+- mantener un sink humano y otro estructurado simultaneamente
+- desacoplar la observabilidad del backend final
+
+## Ejemplo orientado a produccion
+
+El paquete incluye un ejemplo opt-in mas cercano a un despliegue real en:
+
+- `examples/agent_did_langchain_production_recipe_example.py`
+
+Ese ejemplo muestra:
+
+- configuracion por variables de entorno
+- uso de `create_agent(...)` con modelo real
+- observabilidad compuesta con callback local, JSON logging y LangSmith opcional
+- guardas para evitar ejecucion accidental sin credenciales o flags explicitos
+
+Variables principales:
+
+- `RUN_LANGCHAIN_PRODUCTION_EXAMPLE=1`: habilita la ejecucion real del agente
+- `LANGCHAIN_MODEL`: modelo/provider para `create_agent(...)`, por ejemplo `openai:gpt-4.1-mini`
+- `AGENT_DID_SIGNER_ADDRESS`: signer address del runtime local
+- `OPENAI_API_KEY`: requerida si usa un modelo OpenAI real
+- `LANGSMITH_TRACING=1`: habilita fan-out adicional a LangSmith si el entorno ya esta configurado
+
+Si faltan credenciales o la flag de ejecucion, el ejemplo termina sin error y solo imprime instrucciones.
+
 ## Hallazgos tecnicos confirmados
 
 La documentacion publica actual de LangChain Python confirma al menos estas superficies utiles:
@@ -241,6 +374,7 @@ El plan tecnico cerrado por archivos, versiones objetivo y criterios de aceptaci
 - `examples/agent_did_langchain_langsmith_example.py`: tracing local sobre `RunTree` de LangSmith con child runs saneados.
 - `examples/agent_did_langchain_multitool_agent_example.py`: flujo `create_agent(...)` con fake chat model y varias tools Agent-DID.
 - `examples/agent_did_langchain_composed_observability_example.py`: fan-out simultaneo a callback local, JSON logging y LangSmith.
+- `examples/agent_did_langchain_production_recipe_example.py`: ejemplo opt-in con variables de entorno, modelo real y observabilidad compuesta.
 
 ## Criterios de implementacion
 
@@ -269,6 +403,7 @@ El plan tecnico cerrado por archivos, versiones objetivo y criterios de aceptaci
 - `examples/agent_did_langchain_langsmith_example.py`: convierte eventos Agent-DID en child runs de LangSmith sin requerir cambios en la factory.
 - `examples/agent_did_langchain_multitool_agent_example.py`: ejecuta `create_agent(...)` localmente con un fake chat model y muestra un recorrido multi-tool reproducible.
 - `examples/agent_did_langchain_composed_observability_example.py`: demuestra composicion de handlers para emitir simultaneamente a tres sinks.
+- `examples/agent_did_langchain_production_recipe_example.py`: receta opt-in para entorno real con guardas de credenciales, modelo configurable y fan-out de observabilidad.
 
 ## Troubleshooting rapido
 
