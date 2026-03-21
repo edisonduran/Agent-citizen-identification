@@ -1,4 +1,4 @@
-name: CI — Python SDK
+name: CI — Python SDK & RFC-001 Conformance
 
 on:
   push:
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   python-sdk:
-    name: Python ${{ matrix.python-version }} - Lint, Type-check, Build & Test
+    name: Python ${{ matrix.python-version }} - Lint, Type-check, Build, Test & RFC-001 Conformance
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:

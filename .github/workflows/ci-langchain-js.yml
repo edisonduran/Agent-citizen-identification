@@ -1,4 +1,4 @@
-name: CI — TypeScript SDK & RFC-001 Conformance
+name: CI — LangChain JS Integration
 
 on:
   push:
@@ -6,31 +6,27 @@ on:
       - master
       - main
     paths:
-      - '.github/workflows/ci.yml'
+      - '.github/workflows/ci-langchain-js.yml'
       - 'package.json'
-      - 'package-lock.json'
       - 'sdk/**'
-      - 'contracts/**'
-      - 'scripts/**'
+      - 'integrations/langchain/**'
   pull_request:
     paths:
-      - '.github/workflows/ci.yml'
+      - '.github/workflows/ci-langchain-js.yml'
       - 'package.json'
-      - 'package-lock.json'
       - 'sdk/**'
-      - 'contracts/**'
-      - 'scripts/**'
+      - 'integrations/langchain/**'
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-langchain-js-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  validate:
-    name: Node 20 - Build, Test & RFC-001 Conformance
+  langchain-js:
+    name: Node 20 - Build SDK & Test LangChain JS Integration
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -42,24 +38,17 @@ jobs:
           node-version: 20
           cache: npm
           cache-dependency-path: |
-            package-lock.json
             sdk/package-lock.json
-            contracts/package-lock.json
-
-      - name: Install root dependencies
-        run: npm ci
+            integrations/langchain/package-lock.json
 
       - name: Install SDK dependencies
         run: npm --prefix sdk ci
 
-      - name: Install contract dependencies
-        run: npm --prefix contracts ci
-
-      - name: Run TypeScript SDK tests
-        run: npm --prefix sdk test
+      - name: Install LangChain integration dependencies
+        run: npm --prefix integrations/langchain ci
 
       - name: Build TypeScript SDK
         run: npm --prefix sdk run build
 
-      - name: Run RFC-001 conformance suite
-        run: npm run conformance:rfc001
+      - name: Run LangChain integration tests
+        run: npm run test:langchain
