@@ -7,6 +7,7 @@ Turn the current `integrations/langchain-python/` design scaffold into a functio
 This checklist is the execution companion to:
 
 - `docs/F1-03-LangChain-Python-Integration-Design.md`
+- `docs/F1-03-LangChain-Python-Technical-Plan.md`
 - `integrations/langchain-python/README.md`
 
 ---

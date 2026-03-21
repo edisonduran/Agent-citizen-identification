@@ -58,6 +58,8 @@ La forma concreta del adaptador debera acoplarse a las primitivas oficiales de L
 
 La ejecucion del scaffold a paquete funcional esta desglosada en [../../docs/F1-03-LangChain-Python-Implementation-Checklist.md](../../docs/F1-03-LangChain-Python-Implementation-Checklist.md).
 
+El plan tecnico cerrado por archivos, versiones objetivo y criterios de aceptacion esta en [../../docs/F1-03-LangChain-Python-Technical-Plan.md](../../docs/F1-03-LangChain-Python-Technical-Plan.md).
+
 ## Componentes previstos
 
 - `pyproject.toml`: metadata del paquete Python.

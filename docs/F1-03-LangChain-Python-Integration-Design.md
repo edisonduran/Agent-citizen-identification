@@ -4,6 +4,8 @@
 
 Planear la variante Python de la integracion LangChain para Agent-DID, de forma consistente con la integracion JS ya implementada y apoyada en el SDK Python ya disponible.
 
+El plan tecnico cerrado derivado de este diseno esta en [F1-03-LangChain-Python-Technical-Plan.md](F1-03-LangChain-Python-Technical-Plan.md).
+
 ## Estado actual
 
 - Hito relacionado: F1-03 ya completado para la integracion LangChain JS

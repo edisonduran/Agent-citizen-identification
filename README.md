@@ -131,6 +131,7 @@ By default the audit gate is strict: any unmatched finding at severity `Low` or 
 - Implementation backlog: [docs/RFC-001-Implementation-Backlog.md](docs/RFC-001-Implementation-Backlog.md)
 - TS ↔ Python parity matrix: [docs/F2-01-TS-Python-Parity-Matrix.md](docs/F2-01-TS-Python-Parity-Matrix.md)
 - SDK release checklist: [docs/SDK-Release-Checklist.md](docs/SDK-Release-Checklist.md)
+- LangChain Python technical plan: [docs/F1-03-LangChain-Python-Technical-Plan.md](docs/F1-03-LangChain-Python-Technical-Plan.md)
 - Resolver HA runbook: [docs/RFC-001-Resolver-HA-Runbook.md](docs/RFC-001-Resolver-HA-Runbook.md)
 - Complete SDK course (7 modules, Spanish): [docs/Complete-Agent-DID-SDK-Course-ES.md](docs/Complete-Agent-DID-SDK-Course-ES.md)
 - Complete SDK course (7 modules, English): [docs/Complete-Agent-DID-SDK-Course-EN.md](docs/Complete-Agent-DID-SDK-Course-EN.md)
