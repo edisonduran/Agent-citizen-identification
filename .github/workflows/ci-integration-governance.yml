@@ -1,0 +1,61 @@
+name: CI - Integration Governance
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - '.github/workflows/ci-integration-governance.yml'
+      - 'docs/F1-03-LangChain-TS-Python-Integration-Parity-Matrix.md'
+      - 'docs/F1-03-LangChain-Integration-Parity-Review-Checklist.md'
+      - 'docs/F2-04-Microsoft-Agent-Framework-Implementation-Checklist.md'
+      - 'docs/F2-04-Microsoft-Agent-Framework-Integration-Review-Checklist.md'
+      - 'docs/F2-05-CrewAI-Implementation-Checklist.md'
+      - 'docs/F2-05-CrewAI-Integration-Review-Checklist.md'
+      - 'integrations/langchain/**'
+      - 'integrations/langchain-python/**'
+      - 'integrations/microsoft-agent-framework/**'
+      - 'integrations/crewai/**'
+      - 'package.json'
+      - 'scripts/check-integration-governance.js'
+  pull_request:
+    paths:
+      - '.github/workflows/ci-integration-governance.yml'
+      - 'docs/F1-03-LangChain-TS-Python-Integration-Parity-Matrix.md'
+      - 'docs/F1-03-LangChain-Integration-Parity-Review-Checklist.md'
+      - 'docs/F2-04-Microsoft-Agent-Framework-Implementation-Checklist.md'
+      - 'docs/F2-04-Microsoft-Agent-Framework-Integration-Review-Checklist.md'
+      - 'docs/F2-05-CrewAI-Implementation-Checklist.md'
+      - 'docs/F2-05-CrewAI-Integration-Review-Checklist.md'
+      - 'integrations/langchain/**'
+      - 'integrations/langchain-python/**'
+      - 'integrations/microsoft-agent-framework/**'
+      - 'integrations/crewai/**'
+      - 'package.json'
+      - 'scripts/check-integration-governance.js'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance:
+    name: Verify Integration Governance Updates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 20
+
+      - name: Verify integration governance artifacts
+        run: node scripts/check-integration-governance.js "${{ github.event.pull_request.base.sha || github.event.before }}" "${{ github.event.pull_request.head.sha || github.sha }}"

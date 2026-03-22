@@ -1,17 +1,17 @@
 # @agent-did/microsoft-agent-framework
 
-Scaffold de diseno para la futura integracion de Agent-DID con Microsoft Agent Framework.
+Scaffold de diseno listo para implementacion de Agent-DID con Microsoft Agent Framework.
 
-Importante: la documentacion publica consultada muestra superficies estables sobre todo para Python y C#. No se confirmo una ruta JavaScript equivalente en el mismo nivel de madurez, asi que este scaffold no debe interpretarse como un compromiso de implementacion Node.js inmediato.
+Importante: la documentacion publica consultada muestra superficies estables sobre todo para Python y C#. No se confirmo una ruta JavaScript equivalente en el mismo nivel de madurez, asi que este scaffold no debe interpretarse como un compromiso de implementacion Node.js inmediato. La siguiente iteracion sigue orientada a Python sobre el SDK Python ya disponible de Agent-DID.
 
 ## Estado
 
-- Estado actual: `design-scaffold`
+- Estado actual: `sdk-ready-scaffold`
 - Roadmap: F2-04
 - Implementacion: pendiente
 - Publicacion: deshabilitada por ahora (`private: true`)
 
-Este paquete todavia no implementa la integracion. Su objetivo es fijar la forma del paquete, la API esperada y los criterios de validacion antes de escribir el adaptador real.
+Este paquete todavia no implementa la integracion. Su objetivo es fijar la forma del paquete, la API esperada y los criterios de validacion antes de escribir el adaptador real, pero ya no esta bloqueado por la ausencia del SDK Python.
 
 ## Hallazgos tecnicos confirmados
 
@@ -31,10 +31,10 @@ Segun la documentacion oficial y la guia de migracion desde AutoGen, Microsoft A
 La decision actual para F2-04 es:
 
 1. Implementacion en Python.
-2. Dependencia explicita del futuro SDK Python de Agent-DID.
+2. Dependencia explicita del SDK Python existente de Agent-DID.
 3. Sin compromiso de implementacion JS en esta fase.
 
-Hasta que exista el SDK Python, este paquete permanece como scaffold privado de diseno.
+Hasta que se implemente el adaptador Python, este paquete permanece como scaffold privado de diseno.
 
 ## Objetivo
 
@@ -92,6 +92,11 @@ La integracion se considerara lista cuando cumpla al menos con lo siguiente:
 3. Permite firma HTTP con opt-in explicito.
 4. Mantiene rotacion de claves y firma arbitraria deshabilitadas por defecto.
 5. Incluye pruebas automatizadas equivalentes a las del paquete de LangChain.
+
+## Gobernanza de implementacion
+
+- Checklist de implementacion: [../../docs/F2-04-Microsoft-Agent-Framework-Implementation-Checklist.md](../../docs/F2-04-Microsoft-Agent-Framework-Implementation-Checklist.md)
+- Checklist de review recurrente: [../../docs/F2-04-Microsoft-Agent-Framework-Integration-Review-Checklist.md](../../docs/F2-04-Microsoft-Agent-Framework-Integration-Review-Checklist.md)
 
 ## Referencias
 

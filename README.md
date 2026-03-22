@@ -60,8 +60,8 @@ Includes the same core lifecycle primitives as the TypeScript SDK:
 
 - LangChain JS 1.x: implemented in [integrations/langchain/README.md](integrations/langchain/README.md)
 - LangChain Python: functional MVP implemented in [integrations/langchain-python/README.md](integrations/langchain-python/README.md), with dedicated tests, opt-in key rotation, and hardened HTTP signing defaults
-- Microsoft Agent Framework (Semantic Kernel): design scaffold available in [integrations/microsoft-agent-framework/README.md](integrations/microsoft-agent-framework/README.md), roadmap item F2-04
-- CrewAI: design scaffold available in [integrations/crewai/README.md](integrations/crewai/README.md), roadmap item F2-05
+- Microsoft Agent Framework (Semantic Kernel): sdk-ready scaffold with governance artifacts in [integrations/microsoft-agent-framework/README.md](integrations/microsoft-agent-framework/README.md), roadmap item F2-04
+- CrewAI: functional MVP implemented in [integrations/crewai/README.md](integrations/crewai/README.md), roadmap item F2-05
 - Azure AI Agent Service: planned roadmap item F2-08
 
 ## Running Locally
@@ -112,6 +112,17 @@ ruff check src/ tests/ scripts/
 mypy --strict src/
 pytest --cov=agent_did_sdk --cov-fail-under=85 -q
 python scripts/conformance_rfc001.py
+```
+
+If you are working on the CrewAI Python integration, the canonical local workflow is:
+
+```bash
+cd integrations/crewai
+python -m pip install -e .[dev]
+python -m ruff check src/ tests/ examples/
+python -m mypy src/
+python -m build
+python -m pytest tests/ -q
 ```
 
 Repository-level shortcuts also exist:

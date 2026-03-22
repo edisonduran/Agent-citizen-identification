@@ -2,7 +2,7 @@
   "name": "@agent-did/microsoft-agent-framework",
   "version": "0.0.0",
   "private": true,
-  "description": "Design scaffold for the future Agent-DID integration with Microsoft Agent Framework.",
+  "description": "SDK-ready design scaffold for the Agent-DID integration with Microsoft Agent Framework.",
   "main": "src/index.js",
   "files": [
     "src/",
@@ -18,7 +18,7 @@
     "semantic-kernel",
     "identity",
     "did",
-    "design-scaffold"
+    "sdk-ready-scaffold"
   ],
   "author": "Edison Munoz <edison.munoz@agent-did.org>",
   "license": "MIT",

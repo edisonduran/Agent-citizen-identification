@@ -7,11 +7,11 @@ Definir una integracion de Agent-DID para Microsoft Agent Framework que reproduz
 ## Estado actual
 
 - Roadmap item: F2-04
-- Estado: diseno y scaffold inicial
+- Estado: diseno con scaffold listo para implementacion
 - Paquete base: [../integrations/microsoft-agent-framework/README.md](../integrations/microsoft-agent-framework/README.md)
 - Referencia funcional existente: [../integrations/langchain/README.md](../integrations/langchain/README.md)
 - Superficie publica confirmada: documentacion oficial con foco visible en Python y samples Python/C#
-- Decision actual: implementar en Python una vez exista el SDK Python de Agent-DID
+- Decision actual: implementar en Python sobre el SDK Python existente de Agent-DID
 
 ## Hallazgos de investigacion
 
@@ -36,7 +36,7 @@ Aunque Microsoft Agent Framework se presenta como multi-language SDK, en la docu
 - repositorio con samples Python,
 - referencia a samples dotnet.
 
-Por eso, F2-04 no debe asumirse como un paquete JavaScript por defecto. La decision actual del proyecto es implementarlo en Python, pero solo despues de contar con el SDK Python de Agent-DID.
+Por eso, F2-04 no debe asumirse como un paquete JavaScript por defecto. La decision actual del proyecto es implementarlo en Python, y el siguiente paso ya puede comenzar porque el SDK Python de Agent-DID existe.
 
 ## Principios de diseno
 
@@ -98,8 +98,13 @@ const integration = createAgentDidMicrosoftAgentFrameworkIntegration({
 
 ## Recomendacion actual
 
-La siguiente iteracion de F2-04 deberia centrarse en preparar el SDK Python de Agent-DID, porque esa es la dependencia que desbloquea la implementacion del adaptador para Microsoft Agent Framework.
+La siguiente iteracion de F2-04 puede centrarse directamente en implementar el adaptador Python para tools, middleware y contexto de runtime, manteniendo actualizados los checklists de implementacion y review.
 
 ## Criterio de cierre
 
 F2-04 se considerara implementado cuando exista un paquete funcional bajo `integrations/microsoft-agent-framework/`, con ejemplo ejecutable, pruebas automatizadas y documentacion de uso equivalente a la ya disponible en LangChain.
+
+## Artefactos de control
+
+- Checklist de implementacion: `docs/F2-04-Microsoft-Agent-Framework-Implementation-Checklist.md`
+- Checklist de review: `docs/F2-04-Microsoft-Agent-Framework-Integration-Review-Checklist.md`

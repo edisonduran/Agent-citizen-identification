@@ -35,6 +35,51 @@ describe("@agent-did/langchain security edge cases", () => {
     expect(result.error).toContain("http");
   });
 
+  it("sign_http_request rejects localhost targets by default", async () => {
+    const runtimeIdentity = await agentIdentity.create({
+      name: "LocalhostRejectBot",
+      coreModel: "test",
+      systemPrompt: "test",
+    });
+
+    const tools = createAgentDidTools({
+      agentIdentity,
+      runtimeIdentity,
+      expose: { signHttp: true },
+    });
+
+    const signHttp = tools.find((t) => t.name.includes("sign_http_request"));
+    const result = await signHttp.invoke({
+      method: "POST",
+      url: "http://localhost:8080/tasks",
+      body: "{}",
+    });
+
+    expect(result.error).toContain("Private or loopback");
+  });
+
+  it("sign_http_request rejects embedded credentials", async () => {
+    const runtimeIdentity = await agentIdentity.create({
+      name: "CredentialRejectBot",
+      coreModel: "test",
+      systemPrompt: "test",
+    });
+
+    const tools = createAgentDidTools({
+      agentIdentity,
+      runtimeIdentity,
+      expose: { signHttp: true },
+    });
+
+    const signHttp = tools.find((t) => t.name.includes("sign_http_request"));
+    const result = await signHttp.invoke({
+      method: "GET",
+      url: "https://user:secret@example.com/data",
+    });
+
+    expect(result.error).toContain("embedded credentials");
+  });
+
   it("tools return structured error on SDK failure instead of throwing", async () => {
     const runtimeIdentity = await agentIdentity.create({
       name: "ErrorTestBot",

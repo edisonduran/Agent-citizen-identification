@@ -14,6 +14,7 @@
     "smoke:policy": "node scripts/revocation-policy-smoke.js",
     "smoke:rpc": "node scripts/rpc-resolver-smoke.js",
     "conformance:rfc001": "node scripts/conformance-rfc001.js",
+    "check:integration-governance": "node scripts/check-integration-governance.js",
     "test:python": "npm run python:test"
   },
   "dependencies": {

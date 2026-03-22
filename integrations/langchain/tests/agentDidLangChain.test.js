@@ -90,4 +90,20 @@ describe("@agent-did/langchain", () => {
     expect(rotated.verificationMethodId).not.toBe(initialKeyId);
     expect(integration.getCurrentIdentity().authenticationKeyId).toBe(rotated.verificationMethodId);
   });
+
+  it("keeps HTTP signing opt-in by default", async () => {
+    const runtimeIdentity = await agentIdentity.create({
+      name: "DefaultExposureBot",
+      description: "Checks secure defaults",
+      coreModel: "gpt-4.1-mini",
+      systemPrompt: "Default exposure test",
+    });
+
+    const integration = createAgentDidIntegration({
+      agentIdentity,
+      runtimeIdentity,
+    });
+
+    expect(integration.tools.some((currentTool) => currentTool.name === "agent_did_sign_http_request")).toBe(false);
+  });
 });

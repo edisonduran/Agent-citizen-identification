@@ -1,16 +1,50 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "agent-did-crewai"
-version = "0.0.0"
-description = "Design scaffold for the future Agent-DID integration with CrewAI."
+version = "0.1.0"
+description = "CrewAI Python integration for Agent-DID identities, compatible tools, callbacks and secure opt-in operations."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
 authors = [
   { name = "Edison Munoz", email = "edison.munoz@agent-did.org" }
 ]
-dependencies = []
+dependencies = [
+  "agent-did-sdk>=0.1.0",
+  "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2",
+  "pytest>=8.0",
+  "pytest-asyncio>=0.23",
+  "ruff>=0.4",
+  "mypy>=1.10",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP"]
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
 
 [tool.agent-did]
-status = "design-scaffold"
+status = "functional"
 roadmap = "F2-05"
-implementation = "pending"
+implementation = "functional"

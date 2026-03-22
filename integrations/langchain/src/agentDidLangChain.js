@@ -1,7 +1,9 @@
 const { AgentIdentity } = require("@agent-did/sdk");
+const net = require("node:net");
 const { SystemMessage } = require("@langchain/core/messages");
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
+const { createAgentDidObserver } = require("./observability");
 
 const MIDDLEWARE_BRAND = Symbol.for("AgentMiddleware");
 const MAX_PAYLOAD_BYTES = 1048576; // 1 MB
@@ -11,7 +13,7 @@ const DEFAULT_EXPOSURE = {
   resolveDid: true,
   verifySignatures: true,
   signPayload: false,
-  signHttp: true,
+  signHttp: false,
   documentHistory: false,
   rotateKeys: false,
 };
@@ -73,13 +75,133 @@ function buildAgentDidSystemPrompt(snapshot, additionalSystemContext) {
   return lines.join("\n");
 }
 
+function validateHttpTarget(url, allowPrivateNetworkTargets) {
+  const parsedUrl = new URL(url);
+  if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+    throw new Error("Only http and https URLs are allowed");
+  }
+
+  if (parsedUrl.username || parsedUrl.password) {
+    throw new Error("URLs with embedded credentials are not allowed");
+  }
+
+  const hostname = parsedUrl.hostname;
+  if (!hostname) {
+    throw new Error("An absolute URL with hostname is required");
+  }
+
+  const normalizedHostname = hostname.toLowerCase();
+  if (allowPrivateNetworkTargets) {
+    return;
+  }
+
+  if (normalizedHostname === "localhost" || normalizedHostname.endsWith(".localhost")) {
+    throw new Error("Private or loopback HTTP targets are not allowed by default");
+  }
+
+  const ipVersion = net.isIP(normalizedHostname);
+  if (ipVersion === 4 && isRestrictedIpv4(normalizedHostname)) {
+    throw new Error("Private or loopback HTTP targets are not allowed by default");
+  }
+
+  if (ipVersion === 6 && isRestrictedIpv6(normalizedHostname)) {
+    throw new Error("Private or loopback HTTP targets are not allowed by default");
+  }
+}
+
+function isRestrictedIpv4(hostname) {
+  const octets = hostname.split(".").map((segment) => Number.parseInt(segment, 10));
+  if (octets.length !== 4 || octets.some((segment) => Number.isNaN(segment))) {
+    return false;
+  }
+
+  const [first, second] = octets;
+  if (first === 10 || first === 127 || first === 0) {
+    return true;
+  }
+  if (first === 169 && second === 254) {
+    return true;
+  }
+  if (first === 172 && second >= 16 && second <= 31) {
+    return true;
+  }
+  if (first === 192 && second === 168) {
+    return true;
+  }
+  if (first >= 224) {
+    return true;
+  }
+
+  return false;
+}
+
+function isRestrictedIpv6(hostname) {
+  const normalizedHostname = hostname.toLowerCase();
+  return (
+    normalizedHostname === "::1"
+    || normalizedHostname === "::"
+    || normalizedHostname.startsWith("fc")
+    || normalizedHostname.startsWith("fd")
+    || normalizedHostname.startsWith("fe8")
+    || normalizedHostname.startsWith("fe9")
+    || normalizedHostname.startsWith("fea")
+    || normalizedHostname.startsWith("feb")
+    || normalizedHostname.startsWith("ff")
+  );
+}
+
+function emitToolStarted(observer, { toolName, did, inputs = {} }) {
+  observer.emit("agent_did.tool.started", {
+    attributes: {
+      tool_name: toolName,
+      did,
+      inputs,
+    },
+  });
+}
+
+function emitToolSucceeded(observer, { toolName, did, outputs = {} }) {
+  observer.emit("agent_did.tool.succeeded", {
+    attributes: {
+      tool_name: toolName,
+      did,
+      outputs,
+    },
+  });
+}
+
+function emitToolFailed(observer, { toolName, did, error, inputs = {} }) {
+  observer.emit("agent_did.tool.failed", {
+    level: "error",
+    attributes: {
+      tool_name: toolName,
+      did,
+      inputs,
+      error: error instanceof Error ? error.message : String(error),
+    },
+  });
+}
+
+function captureIdentitySnapshot(runtimeIdentity, observer, reason) {
+  const snapshot = buildAgentDidIdentitySnapshot(runtimeIdentity);
+  observer.emit("agent_did.identity_snapshot.refreshed", {
+    attributes: {
+      did: snapshot.did,
+      authentication_key_id: snapshot.authenticationKeyId,
+      reason,
+    },
+  });
+  return snapshot;
+}
+
 function createAgentDidMiddleware(options) {
   const middlewareName = options.middlewareName ?? "AgentDidIdentityMiddleware";
+  const observer = options.observer ?? createAgentDidObserver();
 
   return createBrandedMiddleware({
     name: middlewareName,
     wrapModelCall: async (request, handler) => {
-      const snapshot = buildAgentDidIdentitySnapshot(options.runtimeIdentity);
+      const snapshot = captureIdentitySnapshot(options.runtimeIdentity, observer, "middleware");
       const identitySection = buildAgentDidSystemPrompt(snapshot, options.additionalSystemContext);
 
       return handler({
@@ -97,14 +219,27 @@ function createAgentDidMiddleware(options) {
 function createAgentDidTools(options) {
   const exposure = { ...DEFAULT_EXPOSURE, ...options.expose };
   const toolPrefix = options.toolPrefix ?? "agent_did";
+  const observer = options.observer ?? createAgentDidObserver();
   const tools = [];
 
   if (exposure.currentIdentity) {
     tools.push(
       tool(async () => {
+        const currentDid = options.runtimeIdentity.document.id;
+        const toolName = withPrefix(toolPrefix, "get_current_identity");
+        emitToolStarted(observer, { toolName, did: currentDid });
         try {
-          return buildAgentDidIdentitySnapshot(options.runtimeIdentity);
+          const snapshot = captureIdentitySnapshot(options.runtimeIdentity, observer, "tool:get_current_identity");
+          emitToolSucceeded(observer, {
+            toolName,
+            did: currentDid,
+            outputs: {
+              authentication_key_id: snapshot.authenticationKeyId,
+            },
+          });
+          return snapshot;
         } catch (err) {
+          emitToolFailed(observer, { toolName, did: currentDid, error: err });
           return { error: err instanceof Error ? err.message : String(err) };
         }
       }, {
@@ -118,10 +253,20 @@ function createAgentDidTools(options) {
   if (exposure.resolveDid) {
     tools.push(
       tool(async ({ did }) => {
+        const currentDid = options.runtimeIdentity.document.id;
+        const toolName = withPrefix(toolPrefix, "resolve_did");
+        emitToolStarted(observer, { toolName, did: currentDid, inputs: { did } });
         try {
           const targetDid = did && did.trim() ? did.trim() : options.runtimeIdentity.document.id;
-          return await AgentIdentity.resolve(targetDid);
+          const resolved = await AgentIdentity.resolve(targetDid);
+          emitToolSucceeded(observer, {
+            toolName,
+            did: currentDid,
+            outputs: { resolved_did: resolved.id },
+          });
+          return resolved;
         } catch (err) {
+          emitToolFailed(observer, { toolName, did: currentDid, error: err, inputs: { did } });
           return { error: err instanceof Error ? err.message : String(err) };
         }
       }, {
@@ -137,11 +282,29 @@ function createAgentDidTools(options) {
   if (exposure.verifySignatures) {
     tools.push(
       tool(async ({ did, payload, signature, keyId }) => {
+        const currentDid = options.runtimeIdentity.document.id;
+        const toolName = withPrefix(toolPrefix, "verify_signature");
+        emitToolStarted(observer, {
+          toolName,
+          did: currentDid,
+          inputs: { did, key_id: keyId, payload, signature },
+        });
         try {
           const targetDid = did && did.trim() ? did.trim() : options.runtimeIdentity.document.id;
           const isValid = await AgentIdentity.verifySignature(targetDid, payload, signature, keyId);
+          emitToolSucceeded(observer, {
+            toolName,
+            did: currentDid,
+            outputs: { target_did: targetDid, is_valid: isValid, key_id: keyId },
+          });
           return { did: targetDid, keyId, isValid };
         } catch (err) {
+          emitToolFailed(observer, {
+            toolName,
+            did: currentDid,
+            error: err,
+            inputs: { did, key_id: keyId, payload, signature },
+          });
           return { error: err instanceof Error ? err.message : String(err) };
         }
       }, {
@@ -160,15 +323,25 @@ function createAgentDidTools(options) {
   if (exposure.signPayload) {
     tools.push(
       tool(async ({ payload }) => {
+        const currentDid = options.runtimeIdentity.document.id;
+        const toolName = withPrefix(toolPrefix, "sign_payload");
+        emitToolStarted(observer, { toolName, did: currentDid, inputs: { payload } });
         try {
           const signature = await options.agentIdentity.signMessage(payload, options.runtimeIdentity.agentPrivateKey);
+          const keyId = getActiveVerificationMethodId(options.runtimeIdentity);
+          emitToolSucceeded(observer, {
+            toolName,
+            did: currentDid,
+            outputs: { key_id: keyId, signature_generated: true },
+          });
           return {
-            did: options.runtimeIdentity.document.id,
-            keyId: getActiveVerificationMethodId(options.runtimeIdentity),
+            did: currentDid,
+            keyId,
             payload,
             signature,
           };
         } catch (err) {
+          emitToolFailed(observer, { toolName, did: currentDid, error: err, inputs: { payload } });
           return { error: err instanceof Error ? err.message : String(err) };
         }
       }, {
@@ -184,11 +357,15 @@ function createAgentDidTools(options) {
   if (exposure.signHttp) {
     tools.push(
       tool(async ({ method, url, body }) => {
+        const currentDid = options.runtimeIdentity.document.id;
+        const toolName = withPrefix(toolPrefix, "sign_http_request");
+        emitToolStarted(observer, {
+          toolName,
+          did: currentDid,
+          inputs: { method, url, body },
+        });
         try {
-          const parsedUrl = new URL(url);
-          if (parsedUrl.protocol !== 'https:' && parsedUrl.protocol !== 'http:') {
-            return { error: 'Only http: and https: URLs are allowed' };
-          }
+          validateHttpTarget(url, options.allowPrivateNetworkTargets === true);
           const keyId = getActiveVerificationMethodId(options.runtimeIdentity);
           const headers = await options.agentIdentity.signHttpRequest({
             method,
@@ -199,14 +376,26 @@ function createAgentDidTools(options) {
             verificationMethodId: keyId,
           });
 
+          emitToolSucceeded(observer, {
+            toolName,
+            did: currentDid,
+            outputs: {
+              key_id: keyId,
+              method,
+              url,
+              header_names: Object.keys(headers).sort(),
+            },
+          });
+
           return {
-            did: options.runtimeIdentity.document.id,
+            did: currentDid,
             keyId,
             method,
             url,
             headers,
           };
         } catch (err) {
+          emitToolFailed(observer, { toolName, did: currentDid, error: err, inputs: { method, url, body } });
           return { error: err instanceof Error ? err.message : String(err) };
         }
       }, {
@@ -224,10 +413,20 @@ function createAgentDidTools(options) {
   if (exposure.documentHistory) {
     tools.push(
       tool(async ({ did }) => {
+        const currentDid = options.runtimeIdentity.document.id;
+        const toolName = withPrefix(toolPrefix, "get_document_history");
+        emitToolStarted(observer, { toolName, did: currentDid, inputs: { did } });
         try {
           const targetDid = did && did.trim() ? did.trim() : options.runtimeIdentity.document.id;
-          return await AgentIdentity.getDocumentHistory(targetDid);
+          const history = await AgentIdentity.getDocumentHistory(targetDid);
+          emitToolSucceeded(observer, {
+            toolName,
+            did: currentDid,
+            outputs: { target_did: targetDid, entry_count: history.length },
+          });
+          return history;
         } catch (err) {
+          emitToolFailed(observer, { toolName, did: currentDid, error: err, inputs: { did } });
           return { error: err instanceof Error ? err.message : String(err) };
         }
       }, {
@@ -243,6 +442,9 @@ function createAgentDidTools(options) {
   if (exposure.rotateKeys) {
     tools.push(
       tool(async () => {
+        const currentDid = options.runtimeIdentity.document.id;
+        const toolName = withPrefix(toolPrefix, "rotate_key");
+        emitToolStarted(observer, { toolName, did: currentDid });
         try {
           const rotated = await AgentIdentity.rotateVerificationMethod(options.runtimeIdentity.document.id);
           const updatedIdentity = {
@@ -252,13 +454,22 @@ function createAgentDidTools(options) {
             verificationMethodId: rotated.verificationMethodId,
           };
           Object.assign(options.runtimeIdentity, updatedIdentity);
+          const snapshot = captureIdentitySnapshot(options.runtimeIdentity, observer, "tool:rotate_key");
+          emitToolSucceeded(observer, {
+            toolName,
+            did: currentDid,
+            outputs: {
+              verification_method_id: rotated.verificationMethodId,
+            },
+          });
 
           return {
             did: rotated.document.id,
             verificationMethodId: rotated.verificationMethodId,
-            snapshot: buildAgentDidIdentitySnapshot(options.runtimeIdentity),
+            snapshot,
           };
         } catch (err) {
+          emitToolFailed(observer, { toolName, did: currentDid, error: err });
           return { error: err instanceof Error ? err.message : String(err) };
         }
       }, {
@@ -273,13 +484,22 @@ function createAgentDidTools(options) {
 }
 
 function createAgentDidIntegration(options) {
-  const middleware = createAgentDidMiddleware(options);
-  const tools = createAgentDidTools(options);
+  const observer = options.observer ?? createAgentDidObserver({
+    eventHandler: options.observabilityHandler,
+    logger: options.logger,
+  });
+  const integrationOptions = {
+    ...options,
+    observer,
+  };
+  const middleware = createAgentDidMiddleware(integrationOptions);
+  const tools = createAgentDidTools(integrationOptions);
 
   return {
     middleware,
+    observer,
     tools,
-    getCurrentIdentity: () => buildAgentDidIdentitySnapshot(options.runtimeIdentity),
+    getCurrentIdentity: () => captureIdentitySnapshot(options.runtimeIdentity, observer, "get_current_identity"),
     getCurrentDocument: () => options.runtimeIdentity.document,
   };
 }

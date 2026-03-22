@@ -1,10 +1,10 @@
 "use strict";
 
-const MICROSOFT_AGENT_FRAMEWORK_INTEGRATION_STATUS = "design-scaffold";
+const MICROSOFT_AGENT_FRAMEWORK_INTEGRATION_STATUS = "sdk-ready-scaffold";
 
 function createAgentDidMicrosoftAgentFrameworkIntegration() {
   throw new Error(
-    "The Microsoft Agent Framework integration is still in design. The stable public documentation currently emphasizes Python and C# surfaces; see the package README for architecture notes and implementation constraints."
+    "The Microsoft Agent Framework integration remains scaffold-only, but it is no longer blocked by SDK availability. The stable public documentation still emphasizes Python and C# surfaces; see the package README plus the implementation and review checklists for architecture notes and delivery criteria."
   );
 }
 

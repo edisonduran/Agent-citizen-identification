@@ -2,15 +2,15 @@
 
 ## Objetivo
 
-Definir una integracion de Agent-DID para CrewAI orientada a Python, alineada con las superficies publicas del framework y dependiente del futuro SDK Python de Agent-DID.
+Consolidar una integracion de Agent-DID para CrewAI orientada a Python, alineada con las superficies publicas del framework y ya implementada sobre el SDK Python existente de Agent-DID.
 
 ## Estado actual
 
 - Roadmap item: F2-05
-- Estado: diseno y scaffold inicial
+- Estado: integracion funcional con toolkit de tools, callbacks, guardrails y outputs estructurados
 - Paquete base: [../integrations/crewai/README.md](../integrations/crewai/README.md)
 - Referencia funcional existente: [../integrations/langchain/README.md](../integrations/langchain/README.md)
-- Decision actual: implementar en Python una vez exista el SDK Python de Agent-DID
+- Decision actual: mantener la cobertura funcional sobre tools, callbacks, guardrails y helpers explicitos de `Agent`, `Task` y `Crew`
 
 ## Hallazgos de investigacion
 
@@ -69,20 +69,26 @@ integration = create_agent_did_crewai_integration(
 2. Toolkit Agent-DID para CrewAI.
 3. Integracion con callbacks para trazabilidad.
 4. Guardrails opcionales para validar outputs y firmas.
-5. Ejemplo runnable con `Agent`, `Task` y `Crew`.
-6. Suite automatizada de pruebas Python.
+5. Helpers explicitos para `Agent`, `Task` y `Crew`.
+6. Outputs estructurados reutilizables para `output_pydantic`.
+7. Ejemplo runnable con wiring compatible con `Agent`, `Task` y `Crew`.
+8. Suite automatizada de pruebas Python y validacion de build.
 
 ## Riesgos tecnicos
 
-- Dependencia del futuro SDK Python de Agent-DID.
 - Diferencias entre tool-level integration y callback-level auditing.
 - Riesgo de duplicar contexto sensible en memoria o logs si no se controla bien.
 - Posible necesidad de separar integracion para `Agent.kickoff()` directa vs `Crew.kickoff()`.
 
 ## Recomendacion actual
 
-La siguiente iteracion de F2-05 deberia comenzar cuando exista el SDK Python de Agent-DID. En ese momento conviene priorizar primero un toolkit de tools y callbacks, y despues agregar guardrails o envelopes de salida firmados.
+La siguiente iteracion de F2-05 ya no es cerrar el paquete base, sino mantener paridad documental y ampliar casos avanzados solo si aparecen requisitos nuevos del host runtime.
 
 ## Criterio de cierre
 
-F2-05 se considerara implementado cuando exista un paquete funcional bajo `integrations/crewai/`, con ejemplo ejecutable, pruebas automatizadas y documentacion de uso equivalente a la ya disponible en LangChain.
+F2-05 se considera implementado en el alcance actual del repo: existe un paquete funcional bajo `integrations/crewai/`, con ejemplo ejecutable, helpers de `Agent`/`Task`/`Crew`, pruebas automatizadas, validacion de build y documentacion de uso equivalente a la ya disponible en LangChain.
+
+## Artefactos de control
+
+- Checklist de implementacion: `docs/F2-05-CrewAI-Implementation-Checklist.md`
+- Checklist de review: `docs/F2-05-CrewAI-Integration-Review-Checklist.md`

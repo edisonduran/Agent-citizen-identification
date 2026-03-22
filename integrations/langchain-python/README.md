@@ -4,6 +4,8 @@ Integracion funcional de Agent-DID para LangChain Python 1.2.x.
 
 Esta variante complementa la integracion ya implementada en TypeScript/JavaScript y reutiliza el SDK Python real de Agent-DID como backend para snapshot de identidad, resolucion, verificacion, firma HTTP opt-in y rotacion controlada de claves.
 
+La matriz de parity entre ambas integraciones vive en `../../docs/F1-03-LangChain-TS-Python-Integration-Parity-Matrix.md`.
+
 ## Estado
 
 - Estado actual: `functional-mvp`
