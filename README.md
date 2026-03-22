@@ -5,6 +5,8 @@
 
 Reference project for the **Agent-DID (RFC-001)** standard: decentralized identity for AI agents with cryptographic signing, document resolution, revocation, and evolution traceability.
 
+Documentation governance for live project status and canonical sources of truth is defined in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Current Status
 
 The project is past the specification-only phase: it includes a functional implementation and a validation pipeline.
