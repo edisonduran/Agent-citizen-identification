@@ -558,6 +558,7 @@ Completar F2-01 desbloquea directamente:
 |---------|-------------|---------|
 | **F2-04** | Semantic Kernel Integration (Python) | Microsoft ecosystem runtime |
 | **F2-05** | CrewAI Integration | Independent agent framework |
+| **F2-09** | Microsoft Agent Framework Integration | Enterprise workflow orchestration runtime |
 | **LangChain Python** | integrations/langchain-python | Largest AI framework |
 | **SDK Python en PyPI** | Publicación open-source | Adopción orgánica Python/ML community |
 

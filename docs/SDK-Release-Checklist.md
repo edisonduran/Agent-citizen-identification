@@ -39,6 +39,7 @@ Mark each item before cutting or approving an SDK-affecting release.
 - [ ] If LangChain integrations are affected, the recurring review in `docs/F1-03-LangChain-Integration-Parity-Review-Checklist.md` was completed.
 - [ ] If the CrewAI integration is affected, `docs/F2-05-CrewAI-Implementation-Checklist.md` and `docs/F2-05-CrewAI-Integration-Review-Checklist.md` were reviewed.
 - [ ] If the Semantic Kernel integration is affected, `docs/F2-04-Semantic-Kernel-Implementation-Checklist.md` and `docs/F2-04-Semantic-Kernel-Integration-Review-Checklist.md` were reviewed.
+- [ ] If the Microsoft Agent Framework integration is affected, `docs/F2-09-Microsoft-Agent-Framework-Implementation-Checklist.md` and `docs/F2-09-Microsoft-Agent-Framework-Integration-Review-Checklist.md` were reviewed.
 - [ ] Shared fixtures in `fixtures/` still represent the intended cross-language contract.
 - [ ] Documentation does not describe existing Python SDK capabilities as future work.
 - [ ] CHANGELOG or release notes are prepared if the release is user-visible.
@@ -165,6 +166,16 @@ Checklist:
 - [ ] `docs/F2-04-Semantic-Kernel-Implementation-Checklist.md` still reflects the shipped completion state or the next concrete delta.
 - [ ] `docs/F2-04-Semantic-Kernel-Integration-Review-Checklist.md` still reflects the current runtime, security and documentation review surface.
 - [ ] `integrations/semantic-kernel/src/agent_did_semantic_kernel/__init__.py` still exposes the expected factory and package status constant.
+
+---
+
+## Microsoft Agent Framework Integration Checks
+
+- [ ] `integrations/microsoft-agent-framework/README.md` still describes the package as a shipped Python integration with advanced workflow validation.
+- [ ] Microsoft Agent Framework docs do not describe the integration as future work for the governed F2-09 scope.
+- [ ] `docs/F2-09-Microsoft-Agent-Framework-Implementation-Checklist.md` still reflects the shipped completion state or the next concrete delta.
+- [ ] `docs/F2-09-Microsoft-Agent-Framework-Integration-Review-Checklist.md` still reflects the current runtime, security and documentation review surface.
+- [ ] `integrations/microsoft-agent-framework/src/agent_did_microsoft_agent_framework/__init__.py` still exposes the expected factory and package status constant.
 
 ---
 

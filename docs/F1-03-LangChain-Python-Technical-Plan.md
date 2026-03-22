@@ -453,4 +453,4 @@ La integracion LangChain Python se considerara suficientemente cerrada para el r
 
 La mejor ruta tecnica es implementar primero un MVP funcional de LangChain Python sobre superficies publicas estables de LangChain 1.2, sin intentar replicar literalmente el middleware JS si eso introduce acoplamiento innecesario.
 
-La integracion JS debe seguir tratandose como referencia funcional, y la variante Python debe buscar equivalencia conceptual, seguridad por defecto y validacion automatizada antes de abrir nuevos frentes como CrewAI o Microsoft Agent Framework.
+La integracion JS debe seguir tratandose como referencia funcional, y la variante Python debe buscar equivalencia conceptual, seguridad por defecto y validacion automatizada antes de expandir nuevos frentes adicionales mas alla de los ya entregados para CrewAI, Semantic Kernel y Microsoft Agent Framework.
