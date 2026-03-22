@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import inspect
+
 import pytest
 from agent_did_sdk import AgentIdentity, AgentIdentityConfig, CreateAgentParams, InMemoryAgentRegistry
 
@@ -70,3 +72,21 @@ async def test_callbacks_are_sanitized_and_guardrails_block_sensitive_outputs() 
     assert blocked is False
     assert blocked_message is not None
     assert "payload" in blocked_message
+
+
+@pytest.mark.asyncio
+async def test_guardrail_callable_avoids_runtime_return_annotation() -> None:
+    AgentIdentity.set_registry(InMemoryAgentRegistry())
+    identity = AgentIdentity(AgentIdentityConfig(signer_address="0x9797979797979797979797979797979797979797"))
+    runtime_identity = await identity.create(
+        CreateAgentParams(
+            name="CrewGuardrailCompatibilityBot",
+            core_model="gpt-4.1-mini",
+            system_prompt="Guardrail compatibility test",
+        )
+    )
+
+    integration = create_agent_did_crewai_integration(agent_identity=identity, runtime_identity=runtime_identity)
+    guardrail = create_identity_output_guardrail(integration, required_fields=["result"])
+
+    assert inspect.signature(guardrail).return_annotation is inspect.Signature.empty

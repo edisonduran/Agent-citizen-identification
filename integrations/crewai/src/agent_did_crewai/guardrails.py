@@ -1,7 +1,7 @@
 """Lightweight guardrail helpers for CrewAI outputs."""
 
 from collections.abc import Callable, Iterable
-from typing import Any, Tuple  # noqa: UP035
+from typing import Any, Tuple, cast  # noqa: UP035
 
 from .integration import AgentDidCrewAIIntegration
 from .sanitization import find_sensitive_paths, normalize_output
@@ -15,7 +15,10 @@ def create_identity_output_guardrail(
 ) -> Callable[[Any], GuardrailResult]:
     required = set(required_fields or [])
 
-    def guardrail(output: Any) -> Tuple[bool, Any]:  # noqa: UP006
+    # CrewAI validates callable annotations at runtime and rejects some otherwise
+    # valid guardrail return annotations. Leaving the nested callable unannotated
+    # keeps the runtime contract stable across CrewAI releases.
+    def guardrail(output: Any):
         normalized_output = normalize_output(output)
         if not isinstance(normalized_output, dict):
             return False, "CrewAI guardrail expects a dictionary output"
@@ -35,4 +38,4 @@ def create_identity_output_guardrail(
 
         return True, None
 
-    return guardrail
+    return cast(Callable[[Any], GuardrailResult], guardrail)
