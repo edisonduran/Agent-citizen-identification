@@ -96,7 +96,7 @@ El proyecto ocupa un espacio estratégico de altísimo valor y prácticamente si
 | BT-01 | Resolver en memoria por defecto (no persistente) | No apto para producción real | Alta | Implementar backend persistente (Redis/IPFS/Arweave) |
 | BT-02 | Sin auditoría de seguridad del contrato | Riesgo para despliegue en mainnet | Alta | Auditoría con Slither/Mythril como mínimo; auditoría formal para mainnet |
 | BT-03 | Sin ZKP implementado | El paper teórico los menciona pero el SDK no los soporta | Media | Integrar librería ZKP (snarkjs o similar) para verificación de capabilities |
-| BT-04 | Sin integración con frameworks de agentes | Limita adopción inmediata | Alta | Integraciones para LangChain, CrewAI, Microsoft Agent Framework |
+| BT-04 | Las integraciones ya entregadas requieren mantenimiento y expansión coordinada | El drift entre integraciones publicadas, documentación y claims de madurez puede erosionar la confianza de adopción | Media | Mantener alineadas LangChain, CrewAI, Semantic Kernel y Microsoft Agent Framework; agregar nuevas integraciones de forma deliberada |
 | BT-05 | Paridad semántica cross-SDK todavía en consolidación | Riesgo de divergencias sutiles entre SDKs | Media | Mantener fixtures compartidos y canonicalización estricta de `documentRef` |
 | BT-06 | CI fragmentado entre stacks | Requiere disciplina para sostener criterios equivalentes | Media | Mantener pipelines separados con gates equivalentes y fixtures comunes |
 | BT-07 | RFC auto-dirigido, no ratificado | Sin respaldo de cuerpo de estándares | Media | Someter a DIF o W3C para revisión |
@@ -168,9 +168,9 @@ El proyecto ocupa un espacio estratégico de altísimo valor y prácticamente si
 | ID | Barrera | Severidad | Estrategia de mitigación |
 |---|---|---|---|
 | BA-01 | Efecto red — DIDs necesitan masa crítica de verificadores/emisores | Alta | Alianzas con plataformas de agentes (LangChain, CrewAI, Microsoft Agent Framework) |
-| BA-02 | Sin integración con frameworks dominantes de IA | Alta | Desarrollar integraciones/middleware como prioridad P1 (LangChain) y F2 (Microsoft Agent Framework, CrewAI) |
+| BA-02 | Mantener paridad entre frameworks dominantes de IA | Alta | Mantener alineadas las integraciones entregadas y priorizar tracks abiertos como Azure AI Agent Service y Google A2A |
 | BA-03 | Estándar no ratificado por W3C/DIF/IETF | Media | Someter RFC a DIF; participar en working groups |
-| BA-04 | Ecosistema Python-first en IA | Media-Alta | SDK Python con paridad de funcionalidad |
+| BA-04 | Ecosistema Python-first en IA | Media-Alta | Sostener la paridad y la madurez de release del SDK Python |
 | BA-05 | Educación del mercado | Media | El curso de 2h y el paper teórico son buenos activos iniciales |
 
 ---
@@ -211,16 +211,17 @@ Estado actual: F1-03 ya fue completado y la implementación está disponible en 
 
 | # | Acción | Tipo | Impacto esperado |
 |---|---|---|---|
-| F2-01 | SDK Python con paridad de funcionalidad | Técnico | Penetrar ecosistema dominante de IA/ML |
+| F2-01 | SDK Python con paridad de funcionalidad (completado) | Técnico | Penetrar ecosistema dominante de IA/ML |
 | F2-02 | Integración proof-of-concept con Google A2A | Integración | Demostrar identidad en comunicación A2A |
 | F2-03 | Resolver de producción con backend real (IPFS/Arweave + HTTP) | Técnico | Production-readiness |
-| F2-04 | Integración para Semantic Kernel | Integración | Acceso al runtime de agentes de Microsoft ya validado en Python |
-| F2-05 | Integración para CrewAI | Integración | Cobertura del framework independiente de agentes más popular |
+| F2-04 | Integración para Semantic Kernel (completada) | Integración | Acceso al runtime de agentes de Microsoft ya validado en Python |
+| F2-05 | Integración para CrewAI (completada) | Integración | Cobertura del framework independiente de agentes más popular |
 | F2-06 | Despliegue en testnet pública con documentación | Infraestructura | Validación en entorno real |
 | F2-07 | Publicación de paper teórico como whitepaper formal | Marketing | Credibilidad técnica |
 | F2-08 | Explorar integración con Azure AI Agent Service | Integración | Identity layer para agentes hospedados en Azure |
+| F2-09 | Integración para Microsoft Agent Framework (completada) | Integración | Cobertura de orquestación enterprise con validación nativa de workflows |
 
-Estado actual Fase 2: F2-01 completado — SDK Python implementado, con CI separado en `.github/workflows/ci-python.yml`, fixtures de interoperabilidad compartidos y consolidación activa de paridad semántica con el SDK TypeScript.
+Estado actual Fase 2: F2-01, F2-04, F2-05 y F2-09 ya están completados. El SDK Python y las integraciones de Semantic Kernel, CrewAI y Microsoft Agent Framework están implementados con CI dedicada y validación orientada a runtime. Los tracks abiertos restantes en esta fase son F2-02, F2-03, F2-06, F2-07 y F2-08.
 
 ### Fase 3 — Madurez y estándar (6-12 meses)
 

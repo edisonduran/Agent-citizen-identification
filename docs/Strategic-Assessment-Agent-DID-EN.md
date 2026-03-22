@@ -94,9 +94,9 @@ The project occupies a strategic space of very high value with virtually no dire
 | BT-01 | In-memory resolver by default (not persistent) | Not suitable for real production | High | Implement persistent backend (Redis/IPFS/Arweave) |
 | BT-02 | No contract security audit | Risk for mainnet deployment | High | Audit with Slither/Mythril at minimum; formal audit for mainnet |
 | BT-03 | No ZKP implemented | Theoretical paper mentions them but SDK doesn't support them | Medium | Integrate ZKP library (snarkjs or similar) for capability verification |
-| BT-04 | No integration with agent frameworks | Limits immediate adoption | High | Integrations for LangChain, CrewAI, Microsoft Agent Framework |
-| BT-05 | No Python support | Excludes the dominant AI/ML ecosystem | Medium-High | Python SDK as P2 priority |
-| BT-06 | No observable CI/CD | Tests run locally; no automated pipeline | Medium | GitHub Actions with automated conformance |
+| BT-04 | Delivered framework integrations require coordinated maintenance and expansion | Drift between shipped integrations, docs, and maturity claims can reduce adoption confidence | Medium | Keep LangChain, CrewAI, Semantic Kernel, and Microsoft Agent Framework aligned; add new integrations deliberately |
+| BT-05 | Cross-SDK semantic parity still consolidating | Risk of subtle divergences between TypeScript and Python behaviors | Medium | Maintain shared fixtures and strict `documentRef` canonicalization |
+| BT-06 | CI is split across stacks | Requires discipline to sustain equivalent quality bars across SDKs and integrations | Medium | Keep separate pipelines with equivalent gates, smoke coverage, and shared fixtures |
 | BT-07 | Self-directed RFC, not ratified | No standards body endorsement | Medium | Submit to DIF or W3C for review |
 
 **Technical verdict: VIABLE.** The architecture is solid, cryptographic decisions are correct, and the code demonstrates engineering maturity. Gaps are closable with incremental effort.
@@ -166,9 +166,9 @@ The project occupies a strategic space of very high value with virtually no dire
 | ID | Barrier | Severity | Mitigation strategy |
 |---|---|---|---|
 | BA-01 | Network effect — DIDs need critical mass of verifiers/issuers | High | Alliances with agent platforms (LangChain, CrewAI, Microsoft Agent Framework) |
-| BA-02 | No integration with dominant AI frameworks | High | Develop integrations/middleware as P1 priority (LangChain) and F2 (Microsoft Agent Framework, CrewAI) |
+| BA-02 | Maintaining parity across dominant AI frameworks | High | Keep delivered integrations aligned and prioritize open tracks such as Azure AI Agent Service and Google A2A |
 | BA-03 | Standard not ratified by W3C/DIF/IETF | Medium | Submit RFC to DIF; participate in working groups |
-| BA-04 | Python-first AI ecosystem | Medium-High | Python SDK with feature parity |
+| BA-04 | Python-first AI ecosystem | Medium-High | Sustain Python SDK parity and release maturity |
 | BA-05 | Market education | Medium | The 2h course and theoretical paper are good initial assets |
 
 ---
@@ -209,16 +209,17 @@ Current status: F1-03 is already completed and the implementation is available i
 
 | # | Action | Type | Expected impact |
 |---|---|---|---|
-| F2-01 | Python SDK with feature parity | Technical | Penetrate dominant AI/ML ecosystem |
+| F2-01 | Python SDK with feature parity (completed) | Technical | Penetrate dominant AI/ML ecosystem |
 | F2-02 | Proof-of-concept integration with Google A2A | Integration | Demonstrate identity in A2A communication |
 | F2-03 | Production resolver with real backend (IPFS/Arweave + HTTP) | Technical | Production-readiness |
-| F2-04 | Semantic Kernel integration | Integration | Access to the Microsoft agent runtime already validated in Python |
-| F2-05 | CrewAI integration | Integration | Coverage of the most popular independent agent framework |
+| F2-04 | Semantic Kernel integration (completed) | Integration | Access to the Microsoft agent runtime already validated in Python |
+| F2-05 | CrewAI integration (completed) | Integration | Coverage of the most popular independent agent framework |
 | F2-06 | Deployment on public testnet with documentation | Infrastructure | Validation in real environment |
 | F2-07 | Publication of theoretical paper as formal whitepaper | Marketing | Technical credibility |
 | F2-08 | Explore integration with Azure AI Agent Service | Integration | Identity layer for Azure-hosted agents |
+| F2-09 | Microsoft Agent Framework integration (completed) | Integration | Coverage of enterprise-oriented agent orchestration with native workflow validation |
 
-Phase 2 status: F2-01 completed — Python SDK implemented with full TypeScript SDK parity (74 tests, 86% coverage, ruff clean, interop vectors passing). Available at `sdk-python/`. CI integrated in `.github/workflows/ci.yml`.
+Phase 2 status: F2-01, F2-04, F2-05, and F2-09 are completed. The Python SDK and the Semantic Kernel, CrewAI, and Microsoft Agent Framework integrations are implemented with dedicated CI and runtime-oriented validation. The remaining open tracks in this phase are F2-02, F2-03, F2-06, F2-07, and F2-08.
 
 ### Phase 3 — Maturity and standardization (6-12 months)
 

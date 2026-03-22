@@ -27,12 +27,25 @@ Open an Issue tagged `[RFC]` to start a discussion.
 5. If you touch the LangChain integration, also run `npm run test:langchain` from the project root.
 6. If you touch `sdk-python/`, also run the canonical Python workflow in `sdk-python/README.md`.
 7. If you touch the Solidity contract or audit automation, also run `npm run audit:contracts` with Docker running.
-8. Commit with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat(sdk): add batch DID resolution`).
-9. Open a Pull Request against `master`.
+8. If your change affects delivered status, roadmap closure, CI coverage, maturity claims, or integration scope, update all impacted live documents in the same PR.
+9. Use the documentation checklist in this file when a PR changes project status, roadmap items, integration maturity, or training content.
+10. Commit with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat(sdk): add batch DID resolution`).
+11. Open a Pull Request against `master`.
 
 ### 3. Improve Documentation
 
 Docs are available in English and Spanish under `docs/`. Improvements to the specification, training materials, or runbooks are always welcome. Tag your issue or PR with `[Docs]`.
+
+Documentation in this repository is treated as a live description of the current project state, not as an implicit historical snapshot. If a change updates shipped functionality, roadmap completion, CI coverage, maturity level, or integration availability, the affected documentation must be updated in the same PR.
+
+Documentation update checklist for status-changing work:
+
+- Update the root `README.md` when project-wide status, roadmap completion, CI coverage, or available integrations change.
+- Update the affected package or integration README when public capabilities, examples, runtime coverage, or installation guidance change.
+- Update feature-level governance docs such as implementation checklists, review checklists, parity matrices, and maturity assessments when a roadmap item materially advances.
+- Update training materials and manuals when they make claims about what is currently implemented or available.
+- Update strategic assessments when shipped work changes the project positioning, main gaps, or open adoption barriers.
+- Explicitly label any document as historical if the team decides not to keep it current.
 
 ---
 
@@ -68,11 +81,12 @@ The implemented LangChain package lives in [integrations/langchain/README.md](in
 | F2-01 | **Python SDK** with feature parity | Technical | ✅ Done |
 | F2-02 | **Google A2A proof-of-concept** — Agent-DID as identity layer for A2A | Integration | 🔓 Open |
 | F2-03 | **Production resolver** with persistent backend (IPFS/Arweave + HTTP) | Technical | 🔓 Open |
-| F2-04 | **Semantic Kernel integration** | Integration | 🔓 Open |
-| F2-05 | **CrewAI integration** | Integration | 🔓 Open |
+| F2-04 | **Semantic Kernel integration** | Integration | ✅ Done |
+| F2-05 | **CrewAI integration** | Integration | ✅ Done |
 | F2-06 | **Public testnet deployment** with documentation | Infrastructure | 🔓 Open |
 | F2-07 | Publish theoretical paper as formal whitepaper | Marketing | 🔓 Open |
 | F2-08 | **Azure AI Agent Service integration** | Integration | 🔓 Open |
+| F2-09 | **Microsoft Agent Framework integration** | Integration | ✅ Done |
 
 ### Phase 3 — Maturity & Standardization (6-12 months)
 

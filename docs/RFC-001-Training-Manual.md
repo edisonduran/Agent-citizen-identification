@@ -493,7 +493,7 @@ A: No. DID ownership is tied to the original registrant address. Create a new DI
 A: Agent-DID follows W3C DID Core 1.0 so it interoperates at the standard level. Cross-method resolution depends on universal resolver support.
 
 **Q: Is there a framework integration example available today?**
-A: Yes. LangChain JS 1.x is already implemented in [../integrations/langchain/README.md](../integrations/langchain/README.md). CrewAI now has a functional Python integration in [../integrations/crewai/README.md](../integrations/crewai/README.md). Semantic Kernel now has a functional Python integration in [../integrations/semantic-kernel/README.md](../integrations/semantic-kernel/README.md). Microsoft Agent Framework remains a separate future integration target.
+A: Yes. LangChain JS 1.x is already implemented in [../integrations/langchain/README.md](../integrations/langchain/README.md). CrewAI now has a functional Python integration in [../integrations/crewai/README.md](../integrations/crewai/README.md). Semantic Kernel now has a functional Python integration in [../integrations/semantic-kernel/README.md](../integrations/semantic-kernel/README.md). Microsoft Agent Framework now has a functional Python integration in [../integrations/microsoft-agent-framework/README.md](../integrations/microsoft-agent-framework/README.md). Azure AI Agent Service remains a separate planned integration track.
 
 ### Common Issues
 
