@@ -40,6 +40,7 @@ Use this checklist when implementation work starts or when a PR changes CrewAI p
 - [x] Expose structured observability primitives for callback fan-out and sanitized JSON logging.
 - [x] Define optional guardrails for outputs that must carry DID-derived guarantees.
 - [x] Ensure callback and guardrail paths do not leak private keys, raw payloads or raw signatures by default.
+- [x] Keep shipped guardrail call signatures compatible with CrewAI runtime validation, including the return annotation expected by real `Task` construction.
 
 ---
 

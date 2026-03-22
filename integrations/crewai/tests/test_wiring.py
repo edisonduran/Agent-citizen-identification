@@ -5,6 +5,7 @@ from agent_did_sdk import AgentIdentity, AgentIdentityConfig, CreateAgentParams,
 from pydantic import BaseModel
 
 from agent_did_crewai import PACKAGE_STATUS, create_agent_did_crewai_integration
+from agent_did_crewai.tools import _load_crewai_basetool_class
 
 
 @pytest.mark.asyncio
@@ -33,12 +34,19 @@ async def test_factory_returns_expected_integration_object() -> None:
     agent_kwargs = integration.create_agent_kwargs("CrewAI base prompt")
     task_kwargs = integration.create_task_kwargs(required_output_fields=["result"])
     crew_kwargs = integration.create_crew_kwargs()
+    runtime_base_tool_cls = _load_crewai_basetool_class()
 
     assert "Base role context" in composed
     assert "Use verifiable tools when they improve traceability." in composed
-    assert agent_kwargs["tools"] == integration.tools
+    assert {tool.name for tool in agent_kwargs["tools"]} == {tool.name for tool in integration.tools}
     assert "CrewAI base prompt" in agent_kwargs["backstory"]
-    assert task_kwargs["tools"] == integration.tools
+    assert {tool.name for tool in task_kwargs["tools"]} == {tool.name for tool in integration.tools}
+    if runtime_base_tool_cls is None:
+        assert agent_kwargs["tools"] == integration.tools
+        assert task_kwargs["tools"] == integration.tools
+    else:
+        assert all(isinstance(tool, runtime_base_tool_cls) for tool in agent_kwargs["tools"])
+        assert all(isinstance(tool, runtime_base_tool_cls) for tool in task_kwargs["tools"])
     assert task_kwargs["output_pydantic"].model_fields["did"].is_required()
     assert task_kwargs["output_pydantic"].model_fields["result"].is_required()
     assert "step_callback" in crew_kwargs

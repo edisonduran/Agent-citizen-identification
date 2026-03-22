@@ -42,6 +42,7 @@ Run this checklist when a change affects one or more of the following:
 - [ ] Sensitive capabilities remain opt-in.
 - [ ] Private keys remain outside model-visible prompts and context.
 - [ ] Logs, callbacks and observability hooks do not expose raw secrets by default.
+- [ ] Guardrail callables remain acceptable to the installed CrewAI runtime, including the return signature required by `Task` validation.
 
 ## Observability
 

@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable
-from typing import Any
+from typing import Any, Tuple  # noqa: UP035
 
 from .integration import AgentDidCrewAIIntegration
 from .sanitization import find_sensitive_paths, normalize_output
 
-GuardrailResult = tuple[bool, str | None]
+GuardrailResult = Tuple[bool, Any]  # noqa: UP006
 
 
 def create_identity_output_guardrail(
@@ -17,7 +17,7 @@ def create_identity_output_guardrail(
 ) -> Callable[[Any], GuardrailResult]:
     required = set(required_fields or [])
 
-    def guardrail(output: Any) -> GuardrailResult:
+    def guardrail(output: Any) -> Tuple[bool, Any]:  # noqa: UP006
         normalized_output = normalize_output(output)
         if not isinstance(normalized_output, dict):
             return False, "CrewAI guardrail expects a dictionary output"
