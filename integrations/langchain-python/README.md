@@ -409,6 +409,26 @@ El plan tecnico cerrado por archivos, versiones objetivo y criterios de aceptaci
 - `examples/agent_did_langchain_composed_observability_example.py`: demuestra composicion de handlers para emitir simultaneamente a tres sinks.
 - `examples/agent_did_langchain_production_recipe_example.py`: receta opt-in para entorno real con guardas de credenciales, modelo configurable y fan-out de observabilidad.
 
+## Demo integrado `did:wba`
+
+Para ejecutar el demo integrado local de LangChain Python sin depender de credenciales externas:
+
+```bash
+cd integrations/langchain-python
+python examples/agent_did_langchain_did_wba_demo.py
+```
+
+Este demo prueba en un solo flujo:
+
+- identidad activa `did:wba`
+- resolucion de una contraparte remota `did:wba`
+- `create_agent(...)` con fake chat model reproducible
+- firma HTTP Agent-DID verificable end-to-end
+
+La cobertura automatizada equivalente vive en:
+
+- `tests/test_did_wba_demo.py`
+
 ## Troubleshooting rapido
 
 - Si una tool devuelve `error`, revise el evento `agent_did.tool.failed` para ver el contexto ya redactado.

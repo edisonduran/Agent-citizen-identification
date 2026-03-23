@@ -197,3 +197,23 @@ const integration = createAgentDidIntegration({
 - `tests/agentDidLangChain.test.js`: pruebas de la integracion.
 - `tests/agentDidLangChain.didWbaDemo.test.js`: prueba del flujo integrado `did:wba` con `createAgent()` y verificacion HTTP.
 - `tests/agentDidLangChain.observability.test.js`: pruebas de observabilidad saneada.
+
+## Demo integrado `did:wba`
+
+Para ejecutar el demo integrado local de LangChain JS sin depender de credenciales externas:
+
+```bash
+cd integrations/langchain
+node examples/agentDidLangChain.didWbaDemo.example.js
+```
+
+Este demo prueba en un solo flujo:
+
+- identidad activa `did:wba`
+- resolucion de una contraparte remota `did:wba`
+- `createAgent(...)` con fake model reproducible
+- firma HTTP Agent-DID verificable end-to-end
+
+La cobertura automatizada equivalente vive en:
+
+- `tests/agentDidLangChain.didWbaDemo.test.js`

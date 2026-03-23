@@ -152,6 +152,8 @@ Integrated `did:wba` demos are now available in both LangChain packages:
 - LangChain JS: [integrations/langchain/examples/agentDidLangChain.didWbaDemo.example.js](integrations/langchain/examples/agentDidLangChain.didWbaDemo.example.js)
 - LangChain Python: [integrations/langchain-python/examples/agent_did_langchain_did_wba_demo.py](integrations/langchain-python/examples/agent_did_langchain_did_wba_demo.py)
 
+When these LangChain integrations change, the repository also expects the paired governance artifacts to stay current in [docs/F1-03-LangChain-TS-Python-Integration-Parity-Matrix.md](docs/F1-03-LangChain-TS-Python-Integration-Parity-Matrix.md) and [docs/F1-03-LangChain-Integration-Parity-Review-Checklist.md](docs/F1-03-LangChain-Integration-Parity-Review-Checklist.md).
+
 ## Running Locally
 
 ### Requirements

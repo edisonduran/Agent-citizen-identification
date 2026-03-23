@@ -45,6 +45,19 @@ Update the relevant live documentation when a change affects any of the followin
 - public package capabilities, examples, or installation guidance
 - training or strategic material that states what is currently implemented
 
+## Integration Governance Notes
+
+### LangChain Integrations
+
+Changes under `integrations/langchain/**` or `integrations/langchain-python/**` must update not only the affected package `README.md`, but also the LangChain governance artifacts when the change alters examples, parity expectations, security posture, observability claims, or release-facing behavior.
+
+At minimum, review and update when needed:
+
+- `docs/F1-03-LangChain-TS-Python-Integration-Parity-Matrix.md`
+- `docs/F1-03-LangChain-Integration-Parity-Review-Checklist.md`
+
+This rule exists because LangChain TS and Python are governed as a parity pair in this repository, not as isolated packages.
+
 ## Historical Documents
 
 If the team decides not to keep a document current, it must be explicitly labeled as historical with a visible date or scope boundary.
