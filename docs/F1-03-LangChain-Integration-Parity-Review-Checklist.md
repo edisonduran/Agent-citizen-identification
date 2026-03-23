@@ -54,6 +54,7 @@ Run this checklist when a change affects one or more of the following:
 
 - [ ] `integrations/langchain/README.md` and `integrations/langchain-python/README.md` still describe the same conceptual model.
 - [ ] Both packages still ship, at minimum, base, observability and production-style examples.
+- [ ] If one package ships an integrated `did:wba` demo, the other package ships an equivalent integrated `did:wba` demo or the divergence is explicit in docs.
 - [ ] If both packages ship LangSmith adapters, both READMEs still document them as optional observability surfaces.
 - [ ] The parity matrix in `docs/F1-03-LangChain-TS-Python-Integration-Parity-Matrix.md` still reflects reality.
 
@@ -87,5 +88,6 @@ Parity verification is complete when:
 
 | Date | Change |
 |------|--------|
+| 2026-03-22 | Added explicit parity review gate for integrated `did:wba` demos and refreshed the parity matrix after shipping mirrored LangChain TS/Python demos. |
 | 2026-03-22 | Repository license migrated from MIT to Apache-2.0. `pyproject.toml` and `package.json` updated accordingly. No functional changes to the integration surface. |
 | 2026-03-22 | npm scope rename: `@agent-did/langchain` → `@agentdid/langchain` and `@agent-did/sdk` → `@agentdid/sdk` to align with the `@agentdid` npm org. No changes to the public API or functional surface. |

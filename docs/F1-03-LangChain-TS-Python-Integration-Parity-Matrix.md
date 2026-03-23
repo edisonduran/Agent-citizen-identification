@@ -60,6 +60,7 @@ La parity de integracion se define en cinco dimensiones:
 | Ejemplo base | `agentDidLangChain.example.js` | `agent_did_langchain_example.py` | ✅ | Ambos muestran create_agent/createAgent + tools. |
 | Ejemplo de observabilidad | `agentDidLangChain.observability.example.js` | `agent_did_langchain_observability_example.py` | ✅ | Parity operativa minima lograda. |
 | Receta tipo produccion | `agentDidLangChain.productionRecipe.example.js` | `agent_did_langchain_production_recipe_example.py` | ✅ | Ambos usan guardas de entorno. |
+| Demo integrado `did:wba` | `agentDidLangChain.didWbaDemo.example.js` | `agent_did_langchain_did_wba_demo.py` | ✅ | Ambos muestran runtime `did:wba`, partner remoto `did:wba`, `createAgent`/`create_agent` local y firma HTTP verificable sin credenciales externas. |
 | Integracion LangSmith dedicada | `createLangSmithRunTree(...)` + `createLangSmithEventHandler(...)` | Adapter dedicado disponible | ✅ | Ambos paquetes exponen adaptador dedicado sin cambiar la factory principal. |
 | Profundidad de suite automatizada | tests funcionales, seguridad y observabilidad | tests funcionales, seguridad, observabilidad y modulos internos | ⚠️ | Python sigue mas granular. |
 
@@ -84,6 +85,7 @@ La parity de integracion se define en cinco dimensiones:
 1. README de TS y Python deben describir el mismo modelo conceptual.
 2. Los defaults de seguridad deben seguir alineados.
 3. La taxonomia de eventos de observabilidad debe seguir equivalente.
+4. Si se agrega un demo integrado relevante en una integracion, la otra debe ofrecer un demo equivalente o documentar explicitamente la divergencia.
 
 ---
 
@@ -96,6 +98,7 @@ La parity de integracion se define en cinco dimensiones:
 3. TS ya tiene observabilidad callback/logger saneada equivalente en intencion a Python.
 4. TS ya tiene ejemplos adicionales para observabilidad y receta de produccion.
 5. README y ejemplos de TS quedan alineados con la narrativa de Python.
+6. TS y Python ya exponen demos integrados equivalentes para el flujo `did:wba` con resolucion web y firma HTTP verificable.
 
 ### Gaps abiertos no bloqueantes
 
@@ -120,5 +123,6 @@ La parity de integraciones LangChain TS vs Python se considera mantenida cuando:
 
 | Fecha | Cambio |
 |-------|--------|
+| 2026-03-22 | Se agregaron demos integrados `did:wba` equivalentes para LangChain TS y Python, junto con cobertura automatizada y referencias en README. La parity de ejemplos operativos se mantiene. |
 | 2026-03-22 | Licencia del repositorio migrada de MIT a Apache-2.0. Actualizado `package.json` (langchain TS) y `pyproject.toml` (langchain-python). Sin cambios funcionales en la superficie de integración. |
 | 2026-03-22 | Rename de scope npm: `@agent-did/langchain` → `@agentdid/langchain` y `@agent-did/sdk` → `@agentdid/sdk` para alinear con la organización npm `@agentdid`. Sin cambios en la API pública ni en la lógica funcional. |
