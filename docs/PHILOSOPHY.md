@@ -1,96 +1,96 @@
-# Agent-DID — Filosofía Conceptual
+# Agent-DID — Design Philosophy
 
-**Tipo de documento:** Fundamento filosófico y visión  
-**Versión:** 1.0  
-**Fecha:** 2026-03-22
-
----
-
-## El Problema de Fondo
-
-La inteligencia artificial está dejando de ser una herramienta que los humanos usan para convertirse en un actor que toma decisiones, negocia, ejecuta código, firma operaciones y delega tareas a otros agentes. Esta transición plantea una pregunta que la industria ha ignorado sistemáticamente:
-
-> **¿Cómo sabe un sistema quién es el agente que le está hablando?**
-
-No quién lo creó. No en qué plataforma corre. Sino *quién es ese agente específico*, en este momento, con este comportamiento, ejecutando estas acciones.
-
-OAuth delega esta pregunta a un proveedor centralizado. MCP la ignora por diseño. Los sistemas federados la resuelven para humanos, no para máquinas autónomas. El resultado es una arquitectura de confianza que se quiebra exactamente en el momento en que los agentes empiezan a actuar de forma autónoma y a escala.
-
-Agent-DID existe para responder esa pregunta.
+**Document type:** Conceptual foundation and vision  
+**Version:** 1.0  
+**Date:** 2026-03-22
 
 ---
 
-## Los Cinco Principios
+## The Core Problem
 
-### 1. La identidad es ciudadana de primera clase del stack de IA
+AI is no longer just a tool that humans use — it is becoming an actor that makes decisions, negotiates, executes code, signs operations, and delegates tasks to other agents. This transition raises a question the industry has systematically avoided:
 
-La identidad de un agente no es una credencial que se agrega al final. Es la base sobre la que se construye la confianza entre sistemas autónomos. Sin identidad criptográficamente verificable, no hay auditoría real, no hay responsabilidad algorítmica, no hay sistema de revocación que funcione cuando algo sale mal.
+> **How does a system know who the agent talking to it really is?**
 
-Agent-DID trata la identidad como un componente estructural del agente — tan fundamental como el modelo que lo impulsa o el prompt que lo guía.
+Not who created it. Not which platform it runs on. But *which specific agent*, at this moment, with this behavior, executing these actions.
 
-### 2. Flexible por diseño, no por accidente
+OAuth delegates this question to a centralized provider. MCP ignores it by design. Federated systems solve it for humans, not for autonomous machines. The result is a trust architecture that breaks exactly at the moment when agents start acting autonomously and at scale.
 
-No todos los sistemas necesitan blockchain. No todos los sistemas pueden evitarla. La filosofía de Agent-DID rechaza la imposición de un único mecanismo de anclaje de confianza:
-
-- Un agente en un entorno de alta frecuencia financiera necesita inmutabilidad en EVM y trazabilidad criptográfica on-chain.
-- Un agente en una plataforma de prototipado rápido necesita cero fricción, sin gas fees, sin wallets.
-- Un agente en un entorno regulado necesita credenciales verificables compatibles con marcos de cumplimiento.
-
-El mismo estándar — el mismo SDK — debe funcionar en los tres casos. El desarrollador elige su mecanismo de anclaje según sus necesidades reales, no según las limitaciones de la herramienta.
-
-### 3. Encontrar al desarrollador donde está
-
-Un estándar que requiere aprender un nuevo paradigma antes de escribir la primera línea de código útil tiene un problema de adopción estructural. Agent-DID se integra en los frameworks que los desarrolladores ya usan — LangChain, CrewAI, Semantic Kernel, Microsoft Agent Framework — y les da identidad verificable sin exigirles que abandonen su flujo de trabajo.
-
-La abstracción hace el trabajo pesado. El desarrollador obtiene el beneficio.
-
-### 4. Estándares abiertos sobre lock-in propietario
-
-Agent-DID está construido sobre W3C DID Core y el modelo de datos de Credenciales Verificables. No define un nuevo formato de identidad — extiende el estándar que la industria ya está convergiendo, añadiendo los metadatos específicos que los agentes de IA necesitan: hash del modelo base, hash del system prompt, capacidades declaradas, ciclo de vida de evolución.
-
-Esta elección no es filosófica por conveniencia — es filosófica por convicción. Un ecosistema de identidad para agentes de IA solo tiene valor si es interoperable. Un estándar propietario no es un estándar: es una dependencia.
-
-### 5. Verificabilidad sin complejidad accidental
-
-La criptografía de identidad es compleja. Los desarrolladores de agentes no deberían tener que serlo. La brecha entre "esto es criptográficamente correcto" y "esto es usable en producción" es donde la mayoría de los proyectos de identidad descentralizada fracasan.
-
-Agent-DID cierra esa brecha con dos mecanismos:
-- **Abstracciones de framework** que inyectan identidad en la cadena de ejecución del agente sin código adicional del desarrollador.
-- **Ed25519 por defecto** — la primitiva criptográfica más rápida, más compacta y más segura para entornos de firma de alta frecuencia, sin opciones que confundan ni parámetros que mal-configurar.
+Agent-DID exists to answer that question.
 
 ---
 
-## La Visión
+## The Five Principles
 
-La Web Agéntica — el ecosistema donde los agentes de IA actúan, negocian y colaboran a escala de internet — necesita una capa de identidad que sea a los agentes lo que HTTPS fue a los navegadores: invisible cuando funciona, crítica cuando falla.
+### 1. Identity is a first-class citizen of the AI stack
 
-Agent-DID aspira a ser esa capa. No el único protocolo, sino el estándar de referencia que demuestra que identidad verificable para agentes es posible, asequible y compatible con los frameworks que ya existen.
+An agent's identity is not a credential bolted on at the end. It is the foundation on which trust between autonomous systems is built. Without cryptographically verifiable identity, there is no real audit trail, no algorithmic accountability, no revocation system that works when something goes wrong.
 
-El proyecto no compite con ANP, A2A o MCP. Complementa su ecosistema con la pieza que todos asumen pero ninguno provee: **la prueba criptográfica de quién eres cuando eres un agente autónomo**.
+Agent-DID treats identity as a structural component of the agent — as fundamental as the model that drives it or the prompt that guides it.
+
+### 2. Flexible by design, not by accident
+
+Not every system needs blockchain. Not every system can avoid it. Agent-DID's philosophy rejects the imposition of a single trust-anchoring mechanism:
+
+- An agent in a high-frequency financial environment needs EVM immutability and on-chain cryptographic traceability.
+- An agent on a rapid-prototyping platform needs zero friction — no gas fees, no wallets.
+- An agent in a regulated environment needs verifiable credentials compatible with compliance frameworks.
+
+The same standard — the same SDK — must work in all three cases. The developer chooses their anchoring mechanism based on their real needs, not on the tool's limitations.
+
+### 3. Meet the developer where they are
+
+A standard that requires learning a new paradigm before writing the first useful line of code has a structural adoption problem. Agent-DID integrates into the frameworks developers already use — LangChain, CrewAI, Semantic Kernel, Microsoft Agent Framework — and gives them verifiable identity without requiring them to abandon their workflow.
+
+The abstraction does the heavy lifting. The developer gets the benefit.
+
+### 4. Open standards over proprietary lock-in
+
+Agent-DID is built on W3C DID Core and the Verifiable Credentials data model. It does not define a new identity format — it extends the standard the industry is already converging on, adding the AI-specific metadata agents need: base model hash, system prompt hash, declared capabilities, evolution lifecycle.
+
+This choice is not philosophical by convenience — it is philosophical by conviction. An identity ecosystem for AI agents only has value if it is interoperable. A proprietary standard is not a standard: it is a dependency.
+
+### 5. Verifiability without accidental complexity
+
+Identity cryptography is complex. Agent developers should not have to be. The gap between "this is cryptographically correct" and "this is usable in production" is where most decentralized identity projects fail.
+
+Agent-DID closes that gap with two mechanisms:
+- **Framework abstractions** that inject identity into the agent's execution chain without extra developer code.
+- **Ed25519 by default** — the fastest, most compact, and most secure cryptographic primitive for high-frequency signing environments, with no confusing options or misconfigurable parameters.
 
 ---
 
-## Relación con el Ecosistema
+## The Vision
 
-| Protocolo / Estándar | Rol | Relación con Agent-DID |
+The Agentic Web — the ecosystem where AI agents act, negotiate, and collaborate at internet scale — needs an identity layer that is to agents what HTTPS was to browsers: invisible when it works, critical when it fails.
+
+Agent-DID aspires to be that layer. Not the only protocol, but the reference standard that proves verifiable identity for agents is possible, affordable, and compatible with the frameworks that already exist.
+
+The project does not compete with ANP, A2A, or MCP. It complements their ecosystem with the piece they all assume but none provide: **the cryptographic proof of who you are when you are an autonomous agent**.
+
+---
+
+## Relationship with the Ecosystem
+
+| Protocol / Standard | Role | Relationship with Agent-DID |
 |---|---|---|
-| **W3C DID Core** | Formato de identidad descentralizada | Fundación — Agent-DID lo extiende |
-| **W3C Verifiable Credentials** | Credenciales verificables | Adoptado para certificaciones de compliance |
-| **did:wba (ANP)** | Anclaje web sin blockchain | Método soportado — complementario |
-| **did:ethr / did:key** | Métodos DID estándar | Resolubles via `UniversalResolverClient` |
-| **MCP (Anthropic)** | Integración de herramientas para LLMs | Agent-DID provee la capa de identidad que MCP no define |
-| **Google A2A** | Comunicación entre agentes | Agent-DID provee identidad verificable para actores A2A |
-| **LangChain / CrewAI / SK / MAF** | Frameworks de orquestación | Integrados nativamente — Agent-DID se inyecta en su ciclo de ejecución |
+| **W3C DID Core** | Decentralized identity format | Foundation — Agent-DID extends it |
+| **W3C Verifiable Credentials** | Verifiable credentials | Adopted for compliance certifications |
+| **did:wba (ANP)** | Web-based anchoring without blockchain | Supported method — complementary |
+| **did:ethr / did:key** | Standard DID methods | Resolvable via `UniversalResolverClient` |
+| **MCP (Anthropic)** | Tool integration for LLMs | Agent-DID provides the identity layer MCP does not define |
+| **Google A2A** | Agent-to-agent communication | Agent-DID provides verifiable identity for A2A actors |
+| **LangChain / CrewAI / SK / MAF** | Orchestration frameworks | Natively integrated — Agent-DID injects into their execution lifecycle |
 
 ---
 
-## Lo que Agent-DID No Es
+## What Agent-DID Is Not
 
-- **No es un framework de orquestación.** No reemplaza a LangChain ni a CrewAI. Se integra con ellos.
-- **No es un sistema de pagos.** Aunque es compatible con ERC-4337 para wallets de agente, no gestiona pagos por sí mismo.
-- **No impone blockchain.** El registro EVM es una opción, no un requisito. Los mecanismos `did:wba` o `did:web` son igualmente válidos.
-- **No es una plataforma centralizada.** No hay un servidor Agent-DID al que conectarse. El protocolo es el producto.
+- **Not an orchestration framework.** It does not replace LangChain or CrewAI. It integrates with them.
+- **Not a payment system.** Although it is compatible with ERC-4337 for agent wallets, payment management is out of scope.
+- **Not a blockchain mandate.** The EVM registry is an option, not a requirement. `did:wba` and `did:web` are equally valid.
+- **Not a centralized platform.** There is no Agent-DID server to connect to. The protocol is the product.
 
 ---
 
-*Este documento es la base conceptual del proyecto. Todos los documentos técnicos, decisiones de diseño y prioridades de roadmap deben poder derivarse de los principios aquí expresados.*
+*This document is the conceptual foundation of the project. All technical documents, design decisions, and roadmap priorities should be derivable from the principles expressed here.*
