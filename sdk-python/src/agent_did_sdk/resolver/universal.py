@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import time
+from urllib.parse import quote, unquote, urlparse
 
 from ..core.types import AgentDIDDocument
 from ..crypto.hash import generate_agent_metadata_hash
+from .http_source import HttpDIDDocumentSource
 from .types import (
     ResolverCacheStats,
     ResolverResolutionEvent,
@@ -27,6 +29,7 @@ class UniversalResolverClient:
     def __init__(self, config: UniversalResolverConfig) -> None:
         self._registry = config.registry
         self._source = config.document_source
+        self._wba_source = config.wba_document_source or HttpDIDDocumentSource()
         self._fallback = config.fallback_resolver
         self._cache_ttl_ms = config.cache_ttl_ms
         self._on_event = config.on_resolution_event
@@ -64,6 +67,10 @@ class UniversalResolverClient:
 
         self._misses += 1
         self._emit(did, "cache-miss", started)
+
+        if self._is_did_wba(did):
+            return await self._resolve_did_wba(did, started, now)
+
         self._emit(did, "registry-lookup", started)
 
         record = await self._registry.get_record(did)
@@ -117,11 +124,71 @@ class UniversalResolverClient:
         self._emit(did, "resolved", started, message="fallback")
         return doc.model_copy(deep=True)
 
+    async def _resolve_did_wba(self, did: str, started: float, now: float) -> AgentDIDDocument:
+        document_url = self._derive_did_wba_document_url(did)
+        self._emit(did, "source-fetch", started, message=f"url={document_url}")
+
+        try:
+            resolved = await self._wba_source.get_by_reference(document_url)
+        except Exception as exc:
+            msg = str(exc)
+            self._emit(did, "error", started, message=msg)
+            return await self._fallback_resolve(did, msg, started)
+
+        if resolved is None:
+            return await self._fallback_resolve(did, f"Document not found for did:wba URL: {document_url}", started)
+
+        if resolved.id != did:
+            raise ValueError(f"Resolved document DID mismatch. Expected {did}, got {resolved.id}")
+
+        self._emit(did, "source-fetched", started)
+        self._cache[did] = _CachedDocument(resolved.model_copy(deep=True), now + self._cache_ttl_ms)
+        self._emit(did, "resolved", started)
+        return resolved.model_copy(deep=True)
+
     def _emit(self, did: str, stage: str, started: float, *, message: str | None = None) -> None:
         if self._on_event:
             self._on_event(ResolverResolutionEvent(
                 did=did, stage=stage, duration_ms=self._now_ms() - started, message=message  # type: ignore[arg-type]
             ))
+
+    @staticmethod
+    def _is_did_wba(did: str) -> bool:
+        return did.startswith("did:wba:")
+
+    def _derive_did_wba_document_url(self, did: str) -> str:
+        suffix = did[len("did:wba:"):]
+        if not suffix:
+            raise ValueError(f"Invalid did:wba DID: {did}")
+
+        domain_segment, *path_segments = suffix.split(":")
+        domain = self._decode_did_wba_segment(domain_segment, "domain")
+        if not domain:
+            raise ValueError(f"Invalid did:wba DID: missing domain in {did}")
+
+        safe_segments = [
+            quote(self._decode_did_wba_segment(segment, "path"), safe="")
+            for segment in path_segments
+            if segment
+        ]
+        if safe_segments:
+            pathname = f"/{'/'.join(safe_segments)}/did.json"
+        else:
+            pathname = "/.well-known/did.json"
+
+        url = f"https://{domain}{pathname}"
+        parsed = urlparse(url)
+        if parsed.scheme != "https" or not parsed.netloc:
+            raise ValueError(f"Invalid did:wba DID: {did}")
+
+        return url
+
+    @staticmethod
+    def _decode_did_wba_segment(segment: str, segment_type: str) -> str:
+        try:
+            return unquote(segment)
+        except Exception as exc:
+            raise ValueError(f"Invalid did:wba {segment_type} segment: {segment}") from exc
 
     @staticmethod
     def _now_ms() -> float:

@@ -15,6 +15,7 @@ export interface DIDDocumentSource {
 export interface UniversalResolverConfig {
   registry: AgentRegistry;
   documentSource: DIDDocumentSource;
+  wbaDocumentSource?: DIDDocumentSource;
   fallbackResolver?: DIDResolver;
   cacheTtlMs?: number;
   onResolutionEvent?: (event: ResolverResolutionEvent) => void;

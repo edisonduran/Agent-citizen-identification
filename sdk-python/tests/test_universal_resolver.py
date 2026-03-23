@@ -41,9 +41,32 @@ def _make_doc(did: str = "did:agent:polygon:0xtest") -> AgentDIDDocument:
 class FakeSource:
     def __init__(self, doc: AgentDIDDocument | None = None) -> None:
         self._doc = doc
+        self.calls: list[str] = []
 
     async def get_by_reference(self, ref: str) -> AgentDIDDocument | None:
+        self.calls.append(ref)
         return self._doc
+
+
+class SpyRegistry:
+    def __init__(self) -> None:
+        self.get_record_calls = 0
+
+    async def register(self, did: str, controller: str, document_ref: str | None = None) -> None:
+        return None
+
+    async def set_document_reference(self, did: str, document_ref: str) -> None:
+        return None
+
+    async def revoke(self, did: str) -> None:
+        return None
+
+    async def get_record(self, did: str):
+        self.get_record_calls += 1
+        return None
+
+    async def is_revoked(self, did: str) -> bool:
+        return False
 
 
 class TestUniversalResolverClient:
@@ -80,3 +103,40 @@ class TestUniversalResolverClient:
         ))
         with pytest.raises(ValueError, match="not found"):
             await resolver.resolve("did:agent:polygon:0xmissing")
+
+    async def test_resolve_did_wba_from_well_known_without_registry_lookup(self) -> None:
+        did = "did:wba:agents.example"
+        registry = SpyRegistry()
+        source = FakeSource(_make_doc())
+        wba_source = FakeSource(_make_doc(did))
+        resolver = UniversalResolverClient(UniversalResolverConfig(
+            registry=registry,
+            document_source=source,
+            wba_document_source=wba_source,
+            cache_ttl_ms=60_000,
+        ))
+
+        resolved = await resolver.resolve(did)
+
+        assert resolved.id == did
+        assert registry.get_record_calls == 0
+        assert source.calls == []
+        assert wba_source.calls == ["https://agents.example/.well-known/did.json"]
+
+    async def test_resolve_did_wba_nested_path(self) -> None:
+        did = "did:wba:agents.example%3A8443:profiles:alice"
+        registry = SpyRegistry()
+        wba_source = FakeSource(_make_doc(did))
+        resolver = UniversalResolverClient(UniversalResolverConfig(
+            registry=registry,
+            document_source=FakeSource(None),
+            wba_document_source=wba_source,
+            cache_ttl_ms=60_000,
+        ))
+
+        resolved = await resolver.resolve(did)
+
+        assert resolved.id == did
+        assert registry.get_record_calls == 0
+        assert wba_source.calls == ["https://agents.example:8443/profiles/alice/did.json"]
+        assert resolver.get_cache_stats().misses == 1

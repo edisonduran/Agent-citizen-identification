@@ -1,5 +1,6 @@
 import { AgentDIDDocument } from '../core/types';
 import { generateAgentMetadataHash } from '../crypto/hash';
+import { HttpDIDDocumentSource } from './HttpDIDDocumentSource';
 import {
   DIDResolver,
   ResolverResolutionEvent,
@@ -15,6 +16,7 @@ interface CachedDocument {
 export class UniversalResolverClient implements DIDResolver {
   private readonly registry;
   private readonly documentSource;
+  private readonly wbaDocumentSource;
   private readonly fallbackResolver;
   private readonly cacheTtlMs: number;
   private readonly onResolutionEvent;
@@ -25,6 +27,7 @@ export class UniversalResolverClient implements DIDResolver {
   constructor(private readonly config: UniversalResolverConfig) {
     this.registry = config.registry;
     this.documentSource = config.documentSource;
+    this.wbaDocumentSource = config.wbaDocumentSource ?? new HttpDIDDocumentSource();
     this.fallbackResolver = config.fallbackResolver;
     this.cacheTtlMs = config.cacheTtlMs ?? 60_000;
     this.onResolutionEvent = config.onResolutionEvent;
@@ -58,6 +61,11 @@ export class UniversalResolverClient implements DIDResolver {
 
     this.misses += 1;
     this.emitEvent({ did, stage: 'cache-miss', durationMs: Date.now() - startedAt });
+
+    if (this.isDidWba(did)) {
+      return this.resolveDidWba(did, startedAt, now);
+    }
+
     this.emitEvent({ did, stage: 'registry-lookup', durationMs: Date.now() - startedAt });
     const record = await this.registry.getRecord(did);
 
@@ -134,8 +142,85 @@ export class UniversalResolverClient implements DIDResolver {
     return this.clone(fallbackDocument);
   }
 
+  private async resolveDidWba(did: string, startedAt: number, now: number): Promise<AgentDIDDocument> {
+    const documentUrl = this.deriveDidWbaDocumentUrl(did);
+
+    this.emitEvent({
+      did,
+      stage: 'source-fetch',
+      durationMs: Date.now() - startedAt,
+      message: `url=${documentUrl}`
+    });
+
+    const resolved = await this.wbaDocumentSource.getByReference(documentUrl).catch(async (error) => {
+      const message = error instanceof Error ? error.message : String(error);
+      this.emitEvent({ did, stage: 'error', durationMs: Date.now() - startedAt, message });
+      return this.resolveWithFallback(did, message, startedAt);
+    });
+
+    if (!resolved) {
+      return this.resolveWithFallback(did, `Document not found for did:wba URL: ${documentUrl}`, startedAt);
+    }
+
+    if (resolved.id !== did) {
+      throw new Error(`Resolved document DID mismatch. Expected ${did}, got ${resolved.id}`);
+    }
+
+    this.emitEvent({ did, stage: 'source-fetched', durationMs: Date.now() - startedAt });
+
+    this.cache.set(did, {
+      document: this.clone(resolved),
+      expiresAt: now + this.cacheTtlMs
+    });
+
+    this.emitEvent({ did, stage: 'resolved', durationMs: Date.now() - startedAt });
+
+    return this.clone(resolved);
+  }
+
   private emitEvent(event: ResolverResolutionEvent): void {
     this.onResolutionEvent?.(event);
+  }
+
+  private isDidWba(did: string): boolean {
+    return did.startsWith('did:wba:');
+  }
+
+  private deriveDidWbaDocumentUrl(did: string): string {
+    const suffix = did.slice('did:wba:'.length);
+
+    if (!suffix) {
+      throw new Error(`Invalid did:wba DID: ${did}`);
+    }
+
+    const [domainSegment, ...pathSegments] = suffix.split(':');
+    const domain = this.decodeDidWbaSegment(domainSegment, 'domain');
+
+    if (!domain) {
+      throw new Error(`Invalid did:wba DID: missing domain in ${did}`);
+    }
+
+    const normalizedPathSegments = pathSegments
+      .filter((segment) => segment.length > 0)
+      .map((segment) => encodeURIComponent(this.decodeDidWbaSegment(segment, 'path')));
+
+    const pathname = normalizedPathSegments.length === 0
+      ? '/.well-known/did.json'
+      : `/${normalizedPathSegments.join('/')}/did.json`;
+
+    try {
+      return new URL(pathname, `https://${domain}`).toString();
+    } catch {
+      throw new Error(`Invalid did:wba DID: ${did}`);
+    }
+  }
+
+  private decodeDidWbaSegment(segment: string, segmentType: 'domain' | 'path'): string {
+    try {
+      return decodeURIComponent(segment);
+    } catch {
+      throw new Error(`Invalid did:wba ${segmentType} segment: ${segment}`);
+    }
   }
 
   private computeDocumentReference(document: AgentDIDDocument): string {

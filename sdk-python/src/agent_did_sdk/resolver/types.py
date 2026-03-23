@@ -53,6 +53,7 @@ class ResolverCacheStats:
 class UniversalResolverConfig:
     registry: AgentRegistry
     document_source: DIDDocumentSource
+    wba_document_source: DIDDocumentSource | None = None
     fallback_resolver: DIDResolver | None = None
     cache_ttl_ms: int = 60_000
     on_resolution_event: Callable[[ResolverResolutionEvent], None] | None = None

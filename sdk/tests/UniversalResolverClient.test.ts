@@ -28,6 +28,18 @@ describe('UniversalResolverClient', () => {
     authentication: ['did:agent:polygon:0xabc#key-1']
   };
 
+  const createWbaDocument = (did: string) => ({
+    ...sampleDocument,
+    id: did,
+    verificationMethod: [
+      {
+        ...sampleDocument.verificationMethod[0],
+        id: `${did}#key-1`
+      }
+    ],
+    authentication: [`${did}#key-1`]
+  });
+
   it('should resolve via registry + source and use cache on repeated calls', async () => {
     const registry: AgentRegistry = {
       register: jest.fn(),
@@ -119,6 +131,71 @@ describe('UniversalResolverClient', () => {
     });
 
     await expect(resolver.resolve(sampleDocument.id)).rejects.toThrow('Document not found');
+  });
+
+  it('should resolve did:wba using .well-known without registry lookup', async () => {
+    const did = 'did:wba:agents.example';
+    const wbaDocument = createWbaDocument(did);
+
+    const registry: AgentRegistry = {
+      register: jest.fn(),
+      setDocumentReference: jest.fn(),
+      revoke: jest.fn(),
+      getRecord: jest.fn(),
+      isRevoked: jest.fn().mockResolvedValue(false)
+    };
+
+    const source: DIDDocumentSource = {
+      getByReference: jest.fn().mockResolvedValue(sampleDocument)
+    };
+
+    const wbaDocumentSource: DIDDocumentSource = {
+      getByReference: jest.fn().mockResolvedValue(wbaDocument)
+    };
+
+    const resolver = new UniversalResolverClient({
+      registry,
+      documentSource: source,
+      wbaDocumentSource
+    });
+
+    const resolved = await resolver.resolve(did);
+
+    expect(resolved.id).toEqual(did);
+    expect(registry.getRecord).not.toHaveBeenCalled();
+    expect(source.getByReference).not.toHaveBeenCalled();
+    expect(wbaDocumentSource.getByReference).toHaveBeenCalledWith('https://agents.example/.well-known/did.json');
+  });
+
+  it('should resolve did:wba path segments to nested did.json URL', async () => {
+    const did = 'did:wba:agents.example%3A8443:profiles:alice';
+    const wbaDocument = createWbaDocument(did);
+    const wbaDocumentSource: DIDDocumentSource = {
+      getByReference: jest.fn().mockResolvedValue(wbaDocument)
+    };
+
+    const registry: AgentRegistry = {
+      register: jest.fn(),
+      setDocumentReference: jest.fn(),
+      revoke: jest.fn(),
+      getRecord: jest.fn(),
+      isRevoked: jest.fn().mockResolvedValue(false)
+    };
+
+    const resolver = new UniversalResolverClient({
+      registry,
+      documentSource: {
+        getByReference: jest.fn().mockResolvedValue(null)
+      },
+      wbaDocumentSource
+    });
+
+    const resolved = await resolver.resolve(did);
+
+    expect(resolved.id).toEqual(did);
+    expect(resolver.getCacheStats().misses).toBe(1);
+    expect(registry.getRecord).not.toHaveBeenCalled();
+    expect(wbaDocumentSource.getByReference).toHaveBeenCalledWith('https://agents.example:8443/profiles/alice/did.json');
   });
 
   it('should allow AgentIdentity to use production resolver profile', async () => {
