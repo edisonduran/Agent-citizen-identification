@@ -190,8 +190,10 @@ const integration = createAgentDidIntegration({
 - `src/agentDidLangChain.js`: middleware, herramientas y helpers principales.
 - `src/observability.js`: callbacks, logging JSON y saneamiento de eventos.
 - `examples/agentDidLangChain.example.js`: ejemplo con `createAgent()` de LangChain 1.x.
+- `examples/agentDidLangChain.didWbaDemo.example.js`: demo integrado con runtime `did:wba`, partner remoto `did:wba` y firma HTTP verificable.
 - `examples/agentDidLangChain.observability.example.js`: ejemplo de callback + JSON logging saneado.
 - `examples/agentDidLangChain.langsmith.example.js`: tracing local con `RunTree` de LangSmith y child runs saneados.
 - `examples/agentDidLangChain.productionRecipe.example.js`: receta con guardas de entorno para un flujo mas cercano a produccion.
 - `tests/agentDidLangChain.test.js`: pruebas de la integracion.
+- `tests/agentDidLangChain.didWbaDemo.test.js`: prueba del flujo integrado `did:wba` con `createAgent()` y verificacion HTTP.
 - `tests/agentDidLangChain.observability.test.js`: pruebas de observabilidad saneada.

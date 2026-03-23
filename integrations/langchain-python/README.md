@@ -371,6 +371,7 @@ El plan tecnico cerrado por archivos, versiones objetivo y criterios de aceptaci
 - `src/agent_did_langchain/observability.py`: eventos, redaccion y hooks de observabilidad.
 - `tests/`: pruebas funcionales y de seguridad.
 - `examples/agent_did_langchain_example.py`: quick start runnable.
+- `examples/agent_did_langchain_did_wba_demo.py`: demo integrado con runtime `did:wba`, resolucion web y firma HTTP verificable.
 - `examples/agent_did_langchain_observability_example.py`: callback tracing y redaccion segura.
 - `examples/agent_did_langchain_secure_http_example.py`: firma HTTP verificable end-to-end.
 - `examples/agent_did_langchain_langsmith_example.py`: tracing local sobre `RunTree` de LangSmith con child runs saneados.
@@ -399,6 +400,7 @@ El plan tecnico cerrado por archivos, versiones objetivo y criterios de aceptaci
 ## Ejemplos disponibles
 
 - `examples/agent_did_langchain_example.py`: ensamblaje base, tool calls directos y opcion de demo con modelo real usando `RUN_LANGCHAIN_MODEL_EXAMPLE=1`.
+- `examples/agent_did_langchain_did_wba_demo.py`: demo integrado sin dependencias externas con identidad activa `did:wba`, partner remoto `did:wba`, `create_agent(...)` local y verificacion de firma HTTP.
 - `examples/agent_did_langchain_observability_example.py`: muestra eventos estructurados y la redaccion aplicada a inputs sensibles.
 - `examples/agent_did_langchain_secure_http_example.py`: firma HTTP, devuelve headers verificables y valida la firma con el SDK Python.
 - `examples/agent_did_langchain_json_logging_example.py`: emite eventos saneados como logs JSON listos para agregacion.

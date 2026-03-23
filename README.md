@@ -147,6 +147,11 @@ Includes the same core lifecycle primitives as the TypeScript SDK:
 - Microsoft Agent Framework: functional Python integration with native `Agent`/`tool(...)` wiring, `WorkflowBuilder` helpers, advanced orchestration coverage and sanitized observability in [integrations/microsoft-agent-framework/README.md](integrations/microsoft-agent-framework/README.md), roadmap item F2-09
 - Azure AI Agent Service: planned roadmap item F2-08
 
+Integrated `did:wba` demos are now available in both LangChain packages:
+
+- LangChain JS: [integrations/langchain/examples/agentDidLangChain.didWbaDemo.example.js](integrations/langchain/examples/agentDidLangChain.didWbaDemo.example.js)
+- LangChain Python: [integrations/langchain-python/examples/agent_did_langchain_did_wba_demo.py](integrations/langchain-python/examples/agent_did_langchain_did_wba_demo.py)
+
 ## Running Locally
 
 ### Requirements
