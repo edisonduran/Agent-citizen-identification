@@ -1,0 +1,70 @@
+name: CI — Google A2A Integration
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - "integrations/a2a/**"
+      - "sdk-python/**"
+      - "package.json"
+      - ".github/workflows/ci-a2a.yml"
+  pull_request:
+    paths:
+      - "integrations/a2a/**"
+      - "sdk-python/**"
+      - "package.json"
+      - ".github/workflows/ci-a2a.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-a2a-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  a2a:
+    name: A2A Python ${{ matrix.python-version }} - Validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install SDK Python in dev mode
+        working-directory: sdk-python
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Install A2A integration in dev mode
+        working-directory: integrations/a2a
+        run: python -m pip install -e ".[dev]"
+
+      - name: Lint integration package
+        if: matrix.python-version == '3.12'
+        working-directory: integrations/a2a
+        run: python -m ruff check src/ tests/ examples/
+
+      - name: Type-check integration package
+        if: matrix.python-version == '3.12'
+        working-directory: integrations/a2a
+        run: python -m mypy src/
+
+      - name: Run integration tests
+        working-directory: integrations/a2a
+        run: python -m pytest tests/ -q
+
+      - name: Verify A2A public factory entrypoint
+        if: matrix.python-version == '3.12'
+        run: python -c "from agent_did_a2a import create_agent_did_a2a_integration; print(create_agent_did_a2a_integration.__name__)"

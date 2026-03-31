@@ -6,6 +6,7 @@
 [![Works with CrewAI](https://img.shields.io/badge/works%20with-CrewAI-orange)](integrations/crewai/)
 [![Works with Semantic Kernel](https://img.shields.io/badge/works%20with-Semantic%20Kernel-purple)](integrations/semantic-kernel/)
 [![Works with Microsoft Agent Framework](https://img.shields.io/badge/works%20with-MS%20Agent%20Framework-lightblue)](integrations/microsoft-agent-framework/)
+[![Works with Google A2A](https://img.shields.io/badge/works%20with-Google%20A2A-green)](integrations/a2a/)
 [![CI — TypeScript SDK](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci.yml/badge.svg)](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci.yml)
 [![CI — Python SDK](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-python.yml/badge.svg)](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-python.yml)
 [![CI — LangChain JS](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-langchain-js.yml/badge.svg)](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-langchain-js.yml)
@@ -13,6 +14,7 @@
 [![CI — CrewAI](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-crewai.yml/badge.svg)](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-crewai.yml)
 [![CI — Semantic Kernel](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-semantic-kernel.yml/badge.svg)](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-semantic-kernel.yml)
 [![CI — Microsoft Agent Framework](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-microsoft-agent-framework.yml/badge.svg)](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-microsoft-agent-framework.yml)
+[![CI — Google A2A](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-a2a.yml/badge.svg)](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/ci-a2a.yml)
 [![Contract Audit](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/contract-audit.yml/badge.svg)](https://github.com/edisonduran/Agent-citizen-identification/actions/workflows/contract-audit.yml)
 
 > **Give your AI agents a verifiable identity — in the framework you already use, with or without blockchain.**
@@ -145,6 +147,7 @@ Includes the same core lifecycle primitives as the TypeScript SDK:
 - Semantic Kernel: functional Python integration with tools, session-context helpers, middleware-style identity injection and sanitized observability in [integrations/semantic-kernel/README.md](integrations/semantic-kernel/README.md), roadmap item F2-04
 - CrewAI: functional Python integration with callbacks, guardrails, structured outputs and runtime smoke coverage in [integrations/crewai/README.md](integrations/crewai/README.md), roadmap item F2-05
 - Microsoft Agent Framework: functional Python integration with native `Agent`/`tool(...)` wiring, `WorkflowBuilder` helpers, advanced orchestration coverage and sanitized observability in [integrations/microsoft-agent-framework/README.md](integrations/microsoft-agent-framework/README.md), roadmap item F2-09
+- Google A2A: functional Python proof-of-concept with DID-enriched AgentCards, JSON-RPC request signing, mutual DID-based authentication and sanitized observability in [integrations/a2a/README.md](integrations/a2a/README.md), roadmap item F2-02
 - Azure AI Agent Service: planned roadmap item F2-08
 
 Integrated `did:wba` demos are now available in both LangChain packages:
@@ -282,6 +285,7 @@ Current CI split in GitHub Actions:
 - `CI — LangChain did:wba Demo Smoke`: cross-package smoke that executes the shipped JavaScript and Python integrated demos together.
 - `CI - Semantic Kernel Integration`: dedicated validation for `integrations/semantic-kernel/`.
 - `CI — Microsoft Agent Framework Integration`: dedicated validation for `integrations/microsoft-agent-framework/`.
+- `CI — Google A2A Integration`: dedicated validation for `integrations/a2a/` with DID-enriched AgentCards, JSON-RPC signing, and mutual authentication tests.
 - `Contract Audit`: Slither/Mythril security audit pipeline for `contracts/`.
 
 Python quality gates run in the dedicated workflow at `.github/workflows/ci-python.yml`, exposed in Actions as `CI — Python SDK & RFC-001 Conformance`, which executes the Python SDK matrix, linting, strict type-checking, coverage, build, conformance, and Python smoke tests.
@@ -299,7 +303,7 @@ The LangChain integration is available in [integrations/langchain/README.md](int
 | # | Item | Status |
 |---|---|---|
 | F2-01 | Python SDK with feature parity | Done |
-| F2-02 | Google A2A proof-of-concept | Open |
+| F2-02 | Google A2A proof-of-concept | Done |
 | F2-03 | Production resolver (IPFS/Arweave + HTTP) | Open |
 | F2-04 | Semantic Kernel integration | Done |
 | F2-05 | CrewAI integration | Done |

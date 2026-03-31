@@ -79,7 +79,7 @@ The implemented LangChain package lives in [integrations/langchain/README.md](in
 | # | Item | Type | Status |
 |---|---|---|---|
 | F2-01 | **Python SDK** with feature parity | Technical | ✅ Done |
-| F2-02 | **Google A2A proof-of-concept** — Agent-DID as identity layer for A2A | Integration | 🔓 Open |
+| F2-02 | **Google A2A proof-of-concept** — Agent-DID as identity layer for A2A | Integration | ✅ Done |
 | F2-03 | **Production resolver** with persistent backend (IPFS/Arweave + HTTP) | Technical | 🔓 Open |
 | F2-04 | **Semantic Kernel integration** | Integration | ✅ Done |
 | F2-05 | **CrewAI integration** | Integration | ✅ Done |

@@ -212,7 +212,7 @@ Estado actual: F1-01, F1-02, F1-03, F1-05 y F1-06 ya están completados. F1-04 (
 | # | Acción | Tipo | Impacto esperado |
 |---|---|---|---|
 | F2-01 | SDK Python con paridad de funcionalidad (completado) | Técnico | Penetrar ecosistema dominante de IA/ML |
-| F2-02 | Integración proof-of-concept con Google A2A | Integración | Demostrar identidad en comunicación A2A |
+| F2-02 | Integración proof-of-concept con Google A2A (completado) | Integración | Demostrar identidad en comunicación A2A |
 | F2-03 | Resolver de producción con backend real (IPFS/Arweave + HTTP) | Técnico | Production-readiness |
 | F2-04 | Integración para Semantic Kernel (completada) | Integración | Acceso al runtime de agentes de Microsoft ya validado en Python |
 | F2-05 | Integración para CrewAI (completada) | Integración | Cobertura del framework independiente de agentes más popular |
@@ -221,7 +221,7 @@ Estado actual: F1-01, F1-02, F1-03, F1-05 y F1-06 ya están completados. F1-04 (
 | F2-08 | Explorar integración con Azure AI Agent Service | Integración | Identity layer para agentes hospedados en Azure |
 | F2-09 | Integración para Microsoft Agent Framework (completada) | Integración | Cobertura de orquestación enterprise con validación nativa de workflows |
 
-Estado actual Fase 2: F2-01, F2-04, F2-05 y F2-09 ya están completados. El SDK Python y las integraciones de Semantic Kernel, CrewAI y Microsoft Agent Framework están implementados con CI dedicada y validación orientada a runtime. Los tracks abiertos restantes en esta fase son F2-02, F2-03, F2-06, F2-07 y F2-08.
+Estado actual Fase 2: F2-01, F2-02, F2-04, F2-05 y F2-09 ya están completados. El SDK Python y las integraciones de Semantic Kernel, CrewAI, Microsoft Agent Framework y Google A2A están implementados con CI dedicada y validación orientada a runtime. Los tracks abiertos restantes en esta fase son F2-03, F2-06, F2-07 y F2-08.
 
 ### Fase 3 — Madurez y estándar (6-12 meses)
 
