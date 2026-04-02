@@ -97,6 +97,25 @@ The project is past the specification-only phase: it includes a functional imple
 - **Compliance checklist**: [docs/RFC-001-Compliance-Checklist.md](docs/RFC-001-Compliance-Checklist.md)
 - **Current result**: MUST `11/11 PASS` and SHOULD `5/5 PASS`
 
+## Build In Public
+
+Agent-DID is an open, pre-1.0 project being built in public.
+
+- The core RFC lifecycle is implemented and covered by conformance checks.
+- The TypeScript SDK is published as `@agentdid/sdk` and the Python SDK is available from source in `sdk-python/`.
+- The EVM registry, validation drills, and framework integrations are functional.
+- Community feedback is explicitly welcome before the project reaches full production hardening.
+
+If you want to help shape the next stage, the highest-leverage open areas today are:
+
+- **F1-04** DIF submission and standards review
+- **F2-03** production resolver with persistent backend
+- **F2-06** public testnet deployment and documentation
+- **F2-07** formal whitepaper publication
+- **F2-08** Azure AI Agent Service integration
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution workflow and [docs/RFC-001-Implementation-Backlog.md](docs/RFC-001-Implementation-Backlog.md) for the technical execution history.
+
 ## Main Components
 
 ### 1) TypeScript SDK (`sdk/`)

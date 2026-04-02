@@ -2,7 +2,7 @@
 
 Thank you for considering contributing to Agent-DID! We are building the foundational identity layer for the AI economy, and every contribution matters.
 
-> **Project status:** The TypeScript SDK is published (`@agentdid/sdk`), the Python SDK is implemented with dedicated CI in `sdk-python/`, RFC-001 is fully conformant (11/11 MUST + 5/5 SHOULD), and the EVM smart contract is functional. See the [Roadmap](#roadmap--where-to-contribute) below for what's next.
+> **Project status:** Agent-DID is an open, pre-1.0 project being built in public. The TypeScript SDK is published (`@agentdid/sdk`), the Python SDK is implemented with dedicated CI in `sdk-python/`, RFC-001 is fully conformant (11/11 MUST + 5/5 SHOULD), and the EVM smart contract is functional. See the [Roadmap](#roadmap--where-to-contribute) below for what's next.
 
 ---
 
@@ -46,6 +46,18 @@ Documentation update checklist for status-changing work:
 - Update training materials and manuals when they make claims about what is currently implemented or available.
 - Update strategic assessments when shipped work changes the project positioning, main gaps, or open adoption barriers.
 - Explicitly label any document as historical if the team decides not to keep it current.
+
+### 4. Help With Current Open Tracks
+
+If you want to contribute quickly, these are the most valuable open areas right now:
+
+- **F1-04** Submit RFC-001 to DIF and prepare supporting review material.
+- **F2-03** Build a production resolver backend beyond the current in-memory default.
+- **F2-06** Deploy and document a public testnet environment.
+- **F2-07** Turn the theoretical paper into a formal whitepaper package.
+- **F2-08** Add Azure AI Agent Service integration with the same governance discipline used by the shipped integrations.
+
+If you want to take ownership of one of these, open an issue titled `Proposal: F#-## - <description>` with scope, validation plan, and affected docs.
 
 ---
 
@@ -171,6 +183,6 @@ Report unacceptable behavior to the project maintainers.
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [MIT License](LICENSE).
+By contributing, you agree that your contributions will be licensed under the [Apache-2.0 License](LICENSE).
 
 Thank you for helping us build the future of verifiable AI identity!
